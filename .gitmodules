@@ -1,0 +1,3 @@
+[submodule "src/redis"]
+	path = src/redis
+	url = git://github.com/alphazero/Go-Redis.git
