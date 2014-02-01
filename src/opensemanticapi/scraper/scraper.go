@@ -8,10 +8,9 @@ import (
     "log"
     "io/ioutil"
     "net/http"
-    "os"
 )
 
-func FetchUrlContent(url string) {
+func FetchUrlContent(url string) string{
     resp, err := http.Get(url)
     if err != nil {
         log.Fatal(err)
@@ -25,9 +24,11 @@ func FetchUrlContent(url string) {
         log.Fatal(err)
     }
 
-    _, err = os.Stdout.Write(body)
+    s := string(body[:])
 
     if err != nil {
         log.Fatal(err)
     }
+
+    return s
 }
