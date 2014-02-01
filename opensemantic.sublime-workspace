@@ -1,0 +1,380 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"st",
+				"Stdout"
+			],
+			[
+				"wiki",
+				"wikiSearch"
+			],
+			[
+				"for",
+				"foreach	foreach …"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 67.0,
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 467.0
+	},
+	"console":
+	{
+		"height": 125.0
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/michael.klein/git_priv/opensemanticapi/src/opensemanticapi/scraper/scraper.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/opensemanticapi/helloworld.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/opensemanticapi/lib/scraper.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/redis/redis.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/redis/examples/ciao.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/README.md",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/license",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/redis/connection.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/dump.rdb",
+		"/Users/michael.klein/git_priv/opensemanticapi/src/redis/bench/asyncbench.go",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/db.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/scraping.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/node_modules/restify/node_modules/verror/node_modules/extsprintf/lib/extsprintf.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/node_modules/restify/node_modules/verror/lib/verror.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/db_redis.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/http.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/analyse.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/db_cassandra.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/app/model.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/config.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/scraping.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/db.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/README.md",
+		"/Users/michael.klein/git_priv/opensemanticapi2/config.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/http.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/analyse.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/model.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/lib/tools.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/class.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/http_response.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/app/db_api.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/classes/apiprovider.js",
+		"/Users/michael.klein/git_priv/opensemanticapi2/classes/word.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/classes/textanalyze.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/classes/wiki.js",
+		"/Users/michael.klein/git_priv/opensemanticapi/classes/apiprovider.js",
+		"/Users/michael.klein/git/opensemanticapi/app.js",
+		"/Users/michael.klein/git/opensemanticapi/classes/apiprovider.js",
+		"/Users/michael.klein/git/opensemanticapi/package.json",
+		"/Users/michael.klein/git/opensemanticapi/classes/wiki.js",
+		"/Users/michael.klein/git/opensemanticapi/config.js",
+		"/Users/michael.klein/git/opensemanticapi/README.md",
+		"/Users/michael.klein/git/opensemanticapi/classes/textanalyze.js",
+		"/Users/michael.klein/git/opensemanticapi/lib/tools.js",
+		"/Users/michael.klein/git/opensemanticapi/.gitignore",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/localStorageModule.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/demo.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/partials/index.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/partials/info.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/controllers.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/partials/edit.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/partials/form.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/index.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/app.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/controller.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app2/index.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/js/app.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/js/controllers.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/js/directives.js",
+		"/Users/michael.klein/Library/Application Support/Sublime Text 2/Packages/User/console_log.sublime-snippet",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/js/services.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/partials/index.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/partials/actions.html",
+		"/Users/michael.klein/git/angular-phonecat/app/index.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/partials/batman.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/js/filters.js",
+		"/Users/michael.klein/git/angular-phonecat/app/index-async.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/partials/first.html",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/app/partials/second.html",
+		"/Users/michael.klein/git/angular-phonecat/test/unit/controllersSpec.js",
+		"/Users/michael.klein/git/angular-phonecat/app/js/filters.js",
+		"/Users/michael.klein/git/angular-phonecat/app/partials/phone-detail.html",
+		"/Users/michael.klein/git/angular-phonecat/app/js/controllers.js",
+		"/Users/michael.klein/git/mv-js-framework/angularjs/template.html",
+		"/Users/michael.klein/git/angular-phonecat/app/phones/motorola-atrix-4g.json",
+		"/Users/michael.klein/git/angular-phonecat/app/phones/phones.json",
+		"/Users/michael.klein/git/angular-phonecat/app/partials/phone-list.html",
+		"/Users/michael.klein/git/angular-phonecat/app/lib/angular/angular.js",
+		"/Users/michael.klein/git/symfony2-vagrant/www/app/logs/dev.log",
+		"/Users/michael.klein/git/symfony2-vagrant/Vagrantfile",
+		"/Users/michael.klein/git/symfony2-vagrant/files/nginx/default",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Resources/views/Demo/index.html.twig",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/Client.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/CampaignInstance.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Command/InsertCommand.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/Company.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Resources/views/Demo/hello.html.twig",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Partnermarketing/AssetCacheBundle/Resources/config/config.yml",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/Email.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/LandingPage.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/LandingPageInstance.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/EmailInstance.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/Campaign.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/User.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/Template.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/app/config/config.yml",
+		"/Users/michael.klein/git/symfony2-vagrant/www/src/Acme/DemoBundle/Document/TemplateInstanceInterface.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/app/AppKernel.php",
+		"/Users/michael.klein/git/symfony2-vagrant/www/app/autoload.php",
+		"/Users/michael.klein/git/symfony2-vagrant/README.md",
+		"/Users/michael.klein/git/symfony2-vagrant/www/web/app_dev.php"
+	],
+	"find":
+	{
+		"height": 35.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+			"/Users/michael.klein/git/opensemanticapi"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"main",
+			"set",
+			"go-redis",
+			"Router",
+			"db_port",
+			"= function(",
+			"= function()",
+			"process",
+			"console",
+			"module",
+			"debug_once",
+			"= function",
+			".prototype.",
+			") {",
+			"tools",
+			"Tools",
+			"tools",
+			"wikiSearch",
+			"getRandomItemFromQueue",
+			"console",
+			"/** \n * Server\n */\n\n// Start HTTP API RESTFUL Server\nvar Http = require(\"./app/http\");\nvar http = new Http(); ",
+			"console",
+			"val",
+			"getTopRelations",
+			"$",
+			"Db",
+			"loop",
+			"that",
+			"multi",
+			"incr",
+			"s",
+			"val",
+			"rel",
+			"multi_in",
+			"goToNext",
+			"!');",
+			"term",
+			"Model",
+			"obj",
+			"object",
+			"Class",
+			"classes",
+			"base",
+			"Base",
+			"analyzeText",
+			"analyzeText\n",
+			"inAButNotInB",
+			"~",
+			"level",
+			"getRelations",
+			"contentManager",
+			"contact",
+			"contacts",
+			"contactManager",
+			"Ctrl'",
+			"phone",
+			"batman",
+			"images/",
+			"phone",
+			"http",
+			"getCampaignInstancesOfClient",
+			"users",
+			"getUserRelationsOverview",
+			"echo",
+			"instances",
+			"campaigns",
+			"block",
+			"text",
+			"getRandomTemplateInstance",
+			"company",
+			"companies",
+			"campaign",
+			"client",
+			"user",
+			"getRandomUser",
+			"client",
+			"simpleReadTest",
+			"template",
+			"templates",
+			"array",
+			"getArray",
+			"id",
+			"setId",
+			"index",
+			"generateClientSet",
+			"addCampaignInstance",
+			"getRandomCampaign",
+			"getRandomTemplate",
+			"isInstance",
+			"setIsInstance",
+			"isInstance",
+			"templateInstances",
+			"getRandomTemplateInstance",
+			"getRandomCampaignInstance",
+			"getRandomTemplate"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"img/"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		},
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 0.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				1,
+				0,
+				2,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			0.385552083333,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.sftp":
+	{
+		"height": 0.0
+	},
+	"replace":
+	{
+		"height": 64.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"connection",
+				"src/redis/connection.go"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"opensem",
+				"/Users/michael.klein/git/opensemanticapi/opensemanticapi.sublime-project"
+			],
+			[
+				"",
+				"/Users/michael.klein/git/opensemanticapi/opensemanticapi.sublime-project"
+			],
+			[
+				"open",
+				"/Users/michael.klein/git/opensemanticapi/opensemanticapi.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 310.0,
+	"status_bar_visible": true
+}
