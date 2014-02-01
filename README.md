@@ -41,7 +41,7 @@ The following examples where given after the system was collecting for about one
 * install your redis server (http://redis.io/topics/quickstart) on a disk with several free GB
 * start your redis server with "redis-server" on a new console tab
 * clone this repo "git clone https://github.com/monbro/opensemanticapi.git"
-* export GOPATH=/.../opensemanticapi
+* "export GOPATH=/.../opensemanticapi"
 
 * "go run src/opensemanticapi/helloworld.go" to run the test script
 
