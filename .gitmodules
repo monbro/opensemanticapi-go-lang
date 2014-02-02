@@ -2,11 +2,8 @@
 	path = src/redis
 	url = git://github.com/alphazero/Go-Redis.git
 [submodule "src/github.com/jacobsa/oglematchers"]
-    path = src/github.com/jacobsa/oglematchers
-    url = git://github.com/jacobsa/oglematchers.git
-[submodule "src/github.com/jacobsa/ogletest"]
-    path = src/github.com/jacobsa/ogletest
-    url = git://github.com/jacobsa/ogletest.git
+	path = src/github.com/jacobsa/oglematchers
+	url = git://github.com/jacobsa/oglematchers.git
 [submodule "src/github.com/jacobsa/ogletest"]
     path = src/github.com/jacobsa/ogletest
     url = git://github.com/jacobsa/ogletest.git
