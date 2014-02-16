@@ -36,7 +36,9 @@ func main() {
 
     // catch a suggested list of results for a random keyword
     url := "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
-    val := scraper.FetchUrlContent(url)
+    val := scraper.WikiSearch(url)
 
-    fmt.Printf("Hey, %s!\n", fmt.Sprintf("%s", val))
+    fmt.Printf("%+v \n", val[1])
+
+    // scraper.WikiGrab(val[1])
 }

@@ -2,33 +2,42 @@
  * https://gocasts.io/gocasts/simple-http-get
  */
 
+/*
+ * json response:
+ *
+ * ["database",["Database","Database transaction","Database index"]]
+ */
+
 package scraper
 
 import (
-    "log"
+    // "log"
     "io/ioutil"
     "net/http"
+    "encoding/json"
 )
 
-func FetchUrlContent(url string) string{
-    resp, err := http.Get(url)
-    if err != nil {
-        log.Fatal(err)
-    }
+func WikiSearch(url string) []interface{} {
+    r, _ := http.Get(url)
+    var b []byte
 
-    defer resp.Body.Close()
+    b, _ = ioutil.ReadAll(r.Body)
+    r.Body.Close()
 
-    body, err := ioutil.ReadAll(resp.Body)
+    var decoded []interface{}
 
-    if err != nil {
-        log.Fatal(err)
-    }
+    json.Unmarshal(b, &decoded)
 
-    s := string(body[:])
+    // searchTerm := decoded[0].(string)
+    resultArray := decoded[1].([]interface{})
+    // firstResult := resultArray[0].(string)
 
-    if err != nil {
-        log.Fatal(err)
-    }
+    // log.Printf("%+v", searchTerm)
+    // log.Printf("%+v", firstResult)
 
-    return s
+    return resultArray
+}
+
+func WikiGrab(word string) {
+
 }
