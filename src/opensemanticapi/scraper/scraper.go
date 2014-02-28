@@ -93,16 +93,18 @@ type Page struct {
     Title string  `json:"title"`
 }
 
+func getUrl() string {
+    return "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles="
+}
+
 /*
  * TODO:
  * - add more inline comments
  */
-func WikiGrab(word string) string {
+func WikiGrabStruct(word string) string {
 
-    url := "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=" + word
-
+    url := getUrl() + word
     // DebugJson(url)
-
     b := GrabJson(url)
 
     var jsontype jsonobject
@@ -126,12 +128,13 @@ func WikiGrab(word string) string {
 
 func WikiGrabViaJsonq(word string) string {
 
-    url := "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=" + word
-
+    url := getUrl() + word
     b := GrabJson(url)
-
     s := string(b[:])
 
+    // variable data ist eine hashmap
+    // dessen keysaus strings bestehen
+    // und dessen values vom typ interfaces sein müssen
     data := map[string]interface{}{}
     dec := json.NewDecoder(strings.NewReader(s))
     dec.Decode(&data)
@@ -142,30 +145,33 @@ func WikiGrabViaJsonq(word string) string {
     return word
 }
 
-// func WikiGrab(word string) string {
+func WikiGrab(word string) string {
 
-//     url := "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=" + word
+    url := getUrl() + word
+    b := GrabJson(url)
 
-//     type UserType struct {
-//         UserTypeId int
-//         UserTypeName string
-//     }
+    // DebugJson(url)
 
-//     type User struct {
-//         Session   string   `jpath:"userContext.cobrandConversationCredentials.sessionToken"`
-//         CobrandId int      `jpath:"userContext.cobrandId"`
-//         UserType  UserType `jpath:"userType"`
-//         LoginName string   `jpath:"loginName"`
-//     }
+    type ActualPage struct {
+        PageId int  `json:"pageid"`
+    }
 
-//     docScript := []byte(document)
-//     docMap := map[string]interface{}{}
-//     json.Unmarshal(docScript, &docMap)
+    type SubType struct {
+        Pages map[string]ActualPage `json:"pages"`
+    }
 
-//     user := User{}
-//     DecodePath(docMap, &user)
+    type JsonObject struct {
+        Query SubType `json:"query"`
+        // QueryContinue TestObj `json:"query-continue"`
+    }
 
-//     fmt.Printf("%#v", user)
+    var t JsonObject
+    json.Unmarshal(b, &t)
 
-//     return word
-// }
+    me := t.Query
+    // me = me["pages"]
+
+    log.Printf("%+v", me)
+
+    return word
+}
