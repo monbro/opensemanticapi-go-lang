@@ -15,8 +15,6 @@ import (
     "io/ioutil"
     "net/http"
     "encoding/json"
-    "github.com/jmoiron/jsonq"
-    "strings"
 )
 
 func DebugJson(url string) {
@@ -65,95 +63,24 @@ func WikiSearch(url string) []interface{} {
     return resultArray
 }
 
-type jsonobject struct {
-    Query ObjectType `json:"query"`
-    QueryContinue TestObj `json:"query-continue"`
-}
-
-type TestObj struct {
-    Categories Cat `json:"categories"`
-}
-
-type Cat struct {
-    Value string `json:"clcontinue"`
-}
-
-// .
-
-type ObjectType struct {
-    Pages map[string]interface{} `json:"pages"`
-}
-
-type PageObject struct {
-    Number Page `json:"233953"`
-}
-
-type Page struct {
-    Pageid int `json:"pageid"`
-    Title string  `json:"title"`
-}
-
 func getUrl() string {
     return "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles="
 }
 
-/*
- * TODO:
- * - add more inline comments
- */
-func WikiGrabStruct(word string) string {
-
-    url := getUrl() + word
-    // DebugJson(url)
-    b := GrabJson(url)
-
-    var jsontype jsonobject
-    json.Unmarshal(b, &jsontype)
-    // log.Printf("%+v", jsontype)
-
-    log.Printf("%+v", jsontype.Query)
-
-    // for k, _ := range jsontype.Query.Pages {
-    //     log.Printf("%+v", k)
-    // }
-
-    // searchTerm := decoded[0].(string)
-    // resultArray := decoded.([]interface{})
-    // resultArray := decoded.([]interface{})
-
-    // log.Printf("%+v", resultArray)
-
-    return word
-}
-
-func WikiGrabViaJsonq(word string) string {
-
-    url := getUrl() + word
-    b := GrabJson(url)
-    s := string(b[:])
-
-    // variable data ist eine hashmap
-    // dessen keysaus strings bestehen
-    // und dessen values vom typ interfaces sein müssen
-    data := map[string]interface{}{}
-    dec := json.NewDecoder(strings.NewReader(s))
-    dec.Decode(&data)
-    jq := jsonq.NewQuery(data)
-
-    log.Printf("%+v", jq)
-
-    return word
-}
-
 func WikiGrab(word string) string {
 
+    // generate the url
     url := getUrl() + word
+
+    // grab the wikipedia api response in bytecode
     b := GrabJson(url)
 
     // DebugJson(url)
 
+    // declare structs for our api respoonse
     type ActualPage struct {
         PageId int  `json:"pageid"`
+        Title string `json:"title"`
     }
 
     type SubType struct {
@@ -165,13 +92,21 @@ func WikiGrab(word string) string {
         // QueryContinue TestObj `json:"query-continue"`
     }
 
+    // ini a variable called 't' of our custom type JsonObject
     var t JsonObject
+
+    // actually inject the bytecode into our variable t
     json.Unmarshal(b, &t)
 
-    me := t.Query
-    // me = me["pages"]
+    // assign the value of the property Pages of the struct SubTypes into 'me', which is a hash map
+    me := t.Query.Pages
 
-    log.Printf("%+v", me)
+    // iterate trough all items in the hash map and pringt the key, and the properties PageId and Title
+    for k, v := range me {
+        log.Printf("%+v", k)
+        log.Printf("%+v", v.PageId)
+        log.Printf("%+v", v.Title)
+    }
 
     return word
 }
