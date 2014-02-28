@@ -40,5 +40,11 @@ func main() {
 
     fmt.Printf("%+v \n", val[1])
 
+    // res := scraper.WikiGrab(val[1].(string))
+
+    scraper.WikiGrab("Yanqing_County")
+
+    // fmt.Printf("%+v \n", res)
+
     // scraper.WikiGrab(val[1])
 }

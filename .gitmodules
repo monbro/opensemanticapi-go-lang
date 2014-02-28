@@ -10,3 +10,6 @@
 [submodule "src/github.com/smartystreets/goconvey"]
     path = src/github.com/smartystreets/goconvey
     url = git://github.com/smartystreets/goconvey.git
+[submodule "src/github.com/jmoiron/jsonq"]
+	path = src/github.com/jmoiron/jsonq
+	url = https://github.com/jmoiron/jsonq

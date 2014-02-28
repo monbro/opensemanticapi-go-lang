@@ -20,5 +20,12 @@ func TestScraper(t *testing.T) {
         Convey("val should not be nil", func() {
             So(val, ShouldNotBeNil)
         })
+
+        Convey("val should not be nil", func() {
+            res := scraper.WikiGrab(val[1].(string))
+
+            So(res, ShouldNotBeNil)
+            So(res, ShouldEqual, "Database transaction")
+        })
     })
 }

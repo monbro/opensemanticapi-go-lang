@@ -55,6 +55,7 @@ The following examples where given after the system was collecting for about one
 * "export GOROOT=/path/to/go/projects/opensemanticapi"
 * switch into the folder where you want to watch the tests, e.g. 'cd src/opensemanticapi/'
 * "$GOPATH/bin/goconvey"
+* access the webinterface on http://localhost:8080
 
 **NOTEs**
 
