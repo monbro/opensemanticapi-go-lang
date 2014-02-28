@@ -34,6 +34,16 @@ func DebugJson(url string) {
     log.Printf("DEBUG END ---------------------------")
 }
 
+func GrabJson(url string) []byte{
+    r, _ := http.Get(url)
+    var b []byte
+
+    b, _ = ioutil.ReadAll(r.Body)
+    r.Body.Close()
+
+    return b;
+}
+
 func WikiSearch(url string) []interface{} {
     r, _ := http.Get(url)
     var b []byte
@@ -93,12 +103,7 @@ func WikiGrab(word string) string {
 
     // DebugJson(url)
 
-    r, _ := http.Get(url)
-    var b []byte
-
-    b, _ = ioutil.ReadAll(r.Body)
-    r.Body.Close()
-
+    b := GrabJson(url)
 
     var jsontype jsonobject
     json.Unmarshal(b, &jsontype)
@@ -109,7 +114,6 @@ func WikiGrab(word string) string {
     // for k, _ := range jsontype.Query.Pages {
     //     log.Printf("%+v", k)
     // }
-
 
     // searchTerm := decoded[0].(string)
     // resultArray := decoded.([]interface{})
@@ -123,14 +127,10 @@ func WikiGrab(word string) string {
 func WikiGrabViaJsonq(word string) string {
 
     url := "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=" + word
-    r, _ := http.Get(url)
-    var b []byte
 
-    b, _ = ioutil.ReadAll(r.Body)
-    r.Body.Close()
+    b := GrabJson(url)
 
     s := string(b[:])
-
 
     data := map[string]interface{}{}
     dec := json.NewDecoder(strings.NewReader(s))
@@ -141,3 +141,31 @@ func WikiGrabViaJsonq(word string) string {
 
     return word
 }
+
+// func WikiGrab(word string) string {
+
+//     url := "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=" + word
+
+//     type UserType struct {
+//         UserTypeId int
+//         UserTypeName string
+//     }
+
+//     type User struct {
+//         Session   string   `jpath:"userContext.cobrandConversationCredentials.sessionToken"`
+//         CobrandId int      `jpath:"userContext.cobrandId"`
+//         UserType  UserType `jpath:"userType"`
+//         LoginName string   `jpath:"loginName"`
+//     }
+
+//     docScript := []byte(document)
+//     docMap := map[string]interface{}{}
+//     json.Unmarshal(docScript, &docMap)
+
+//     user := User{}
+//     DecodePath(docMap, &user)
+
+//     fmt.Printf("%#v", user)
+
+//     return word
+// }
