@@ -1,11 +1,5 @@
 /**
- * https://gocasts.io/gocasts/simple-http-get
- */
-
-/*
- * json response:
- *
- * ["database",["Database","Database transaction","Database index"]]
+ * provides functions to process requests to given urls
  */
 
 package scraper
@@ -17,21 +11,69 @@ import (
     "encoding/json"
 )
 
-func DebugJson(url string) {
-    r, _ := http.Get(url)
+type RequestBit struct {
+    Url string
+    PlainResponse string
+    ResponseObject interface{}
+}
+
+/**
+ * will actually do the http get request
+ */
+func (rb *RequestBit) Work() {
+    if(rb.Url == "") {
+        panic("No Url provided!")
+    }
+
+    if(rb.ResponseObject == nil) {
+        panic("No Response Struct provided!")
+    }
+
+    b := rb.GetByteCodeFromUrl()
+    rb.PlainResponse = string(b[:])
+
+    // now parse the response into the given struct object
+
+    json.Unmarshal(b, &rb.ResponseObject)
+
+    // rb.ResponseObjectTwo = rb.ResponseObjectOne[1].([]interface{})
+
+    log.Printf("CUSTOM: %+v", rb.ResponseObject)
+
+    // searchTerm := decoded[0].(string)
+    // resultArray := decoded[1].([]interface{})
+}
+
+/**
+ * will get the byte code from a url
+ */
+func (rb *RequestBit) GetByteCodeFromUrl() []byte{
+    r, _ := http.Get(rb.Url)
     var b []byte
 
     b, _ = ioutil.ReadAll(r.Body)
     r.Body.Close()
 
-    s := string(b[:])
+    return b
+}
 
+/**
+ *  will dump the url and the plain api response string
+ */
+func (rb *RequestBit) DebugMe() {
     log.Printf("DEBUG START ---------------------------")
-    log.Printf("URL: %+v", url)
-    log.Printf("RESPONSE: %+v", s)
+    log.Printf("URL: %+v", rb.Url)
+    log.Printf("RESPONSE: %+v", rb.PlainResponse)
     log.Printf("DEBUG END ---------------------------")
 }
 
+/**
+ * the following should be obsolete soon
+ */
+
+/**
+ * will get the byte code from a http get request
+ */
 func GrabJson(url string) []byte{
     r, _ := http.Get(url)
     var b []byte
@@ -42,6 +84,10 @@ func GrabJson(url string) []byte{
     return b;
 }
 
+/**
+ * will search within wikipedia for pages matching the most for a given string,
+ * then returns all results as an array
+ */
 func WikiSearch(url string) []interface{} {
     r, _ := http.Get(url)
     var b []byte
