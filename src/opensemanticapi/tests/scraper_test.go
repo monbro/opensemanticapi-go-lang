@@ -38,8 +38,11 @@ func TestScraper(t *testing.T) {
 
         rb := new(scraper.RequestBit)
         rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
-        // rb.ResponseObject = new(requestStruct.WikiSearch)
         rb.ResponseObject = new(requestStruct.WikiSearch)
+
+        // 1) actually responseobject is accessiable if it is an array slice
+        // rb.ResponseObject = make(requestStruct.WikiSearch, 2, 100)
+
         rb.Work()
 
         Convey("should have the correct url", func() {
@@ -52,14 +55,28 @@ func TestScraper(t *testing.T) {
 
         Convey("should store the given struct as a the response object", func() {
             So(reflect.TypeOf(rb.ResponseObject).String(), ShouldEqual, "*requestStruct.WikiSearch")
+            // So(reflect.TypeOf(rb.ResponseObject[1].([]interface{})[0]).String(), ShouldEqual, "*requestStruct.WikiSearch")
         })
 
         Convey("should Unmarschal the actual response into the response object", func() {
-            So(rb.ResponseObject, ShouldEqual, "&[database [Database Database transaction Database index]]")
+            So(rb.ResponseObject[0], ShouldEqual, "*requestStruct.WikiSearch")
 
-                // for k, v := range rb.ResponseObject {
-                //     log.Printf("%+v", k)
-                // }
+
+
+            // w := *rb.ResponseObject.(*requestStruct.WikiSearch)
+            // So(w[0], ShouldEqual, "database")
+            // So(w[0], ShouldEqual, "database")
         })
+
+        // Convey("should Unmarschal the actual response into the response object", func() {
+        //     So(rb.ResponseObject[1], ShouldEqual, "[Database Database transaction Database index]")
+
+        //         for k, v := range rb.ResponseObject {
+        //             log.Printf("%+v", k)
+        //             log.Printf("%+v", v)
+        //             log.Printf("%+v", reflect.TypeOf(v).String())
+
+        //         }
+        // })
     })
 }

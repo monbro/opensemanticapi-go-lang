@@ -64,3 +64,10 @@ The following examples where given after the system was collecting for about one
 * GOPATH should be set to where your go projects are
 
 This software is published under the MIT-License. See 'license' for more information.
+
+
+**USEFUL LINKS**
+
+* http://www.golangpatterns.info/object-oriented/classes
+* http://blog.golang.org/laws-of-reflection
+* http://golang.org/pkg/reflect/

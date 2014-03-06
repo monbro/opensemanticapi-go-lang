@@ -5,9 +5,10 @@ import (
     "log"
     "redis"
     "opensemanticapi/scraper"
+    "opensemanticapi/requestStruct"
 )
 
-func main() {
+func mainOld() {
     // Parse command-line flags; needed to let flags used by Go-Redis be parsed.
     flag.Parse()
 
@@ -47,4 +48,14 @@ func main() {
     // fmt.Printf("%+v \n", res)
 
     // scraper.WikiGrab(val[1])
+}
+
+func main() {
+    rb := new(scraper.RequestBit)
+    rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
+    rb.ResponseObject = new(requestStruct.WikiSearch)
+    rb.Work()
+
+    w := *rb.ResponseObject.(*requestStruct.WikiSearch)
+    log.Printf("CUSTOM: %+v", w[0])
 }

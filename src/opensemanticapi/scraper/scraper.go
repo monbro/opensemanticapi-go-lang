@@ -9,12 +9,14 @@ import (
     "io/ioutil"
     "net/http"
     "encoding/json"
+    // "reflect"
+    // "opensemanticapi/requestStruct"
 )
 
 type RequestBit struct {
     Url string
     PlainResponse string
-    ResponseObject interface{}
+    ResponseObject interface{} // you need to make this an array for makring 1) to work
 }
 
 /**
@@ -34,14 +36,23 @@ func (rb *RequestBit) Work() {
 
     // now parse the response into the given struct object
 
+
     json.Unmarshal(b, &rb.ResponseObject)
+    // log.Printf("CUSTOM: %+v", rb.ResponseObject)
 
-    // rb.ResponseObjectTwo = rb.ResponseObjectOne[1].([]interface{})
+    // typeName := reflect.TypeOf(rb.ResponseObject).String()
+    // log.Printf("Type: %+v", typeName) // *requestStruct.WikiSearch
 
-    log.Printf("CUSTOM: %+v", rb.ResponseObject)
+    // typeObj := reflect.TypeOf(rb.ResponseObject)
+    // log.Printf("Type: %+v", typeObj) // *requestStruct.WikiSearch
 
-    // searchTerm := decoded[0].(string)
-    // resultArray := decoded[1].([]interface{})
+
+    // w := reflect.New("*requestStruct.WikiSearch")
+    // slice := reflect.MakeSlice(reflect.SliceOf(*rb.ResponseObject), 0, 0).Interface()
+    // log.Printf("CUSTOM: %+v", reflect.TypeOf(slice))
+
+    // w := *rb.ResponseObject.(*requestStruct.WikiSearch)
+    // log.Printf("CUSTOM: %+v", w[0])
 }
 
 /**
