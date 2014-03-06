@@ -39,13 +39,9 @@ func TestScraper(t *testing.T) {
         rb := new(scraper.RequestBit)
         rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
         rb.ResponseObject = new(requestStruct.WikiSearch)
-        // w := *rb.ResponseObject.(*requestStruct.WikiSearch)
-
-
-        // 1) actually responseobject is accessiable if it is an array slice
-        // rb.ResponseObject = make(requestStruct.WikiSearch, 2, 100)
 
         rb.Work()
+        w := *rb.ResponseObject.(*requestStruct.WikiSearch)
 
         Convey("should have the correct url", func() {
             So(rb.Url, ShouldEqual, "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3")
@@ -57,15 +53,15 @@ func TestScraper(t *testing.T) {
 
         Convey("should store the given struct as a the response object", func() {
             So(reflect.TypeOf(rb.ResponseObject).String(), ShouldEqual, "*requestStruct.WikiSearch")
-            // So(reflect.TypeOf(rb.ResponseObject[1].([]interface{})[0]).String(), ShouldEqual, "*requestStruct.WikiSearch")
         })
 
         Convey("should Unmarschal the actual response into the response object", func() {
-            So(rb.ResponseObject[0], ShouldEqual, "*requestStruct.WikiSearch")
+            So(w[0], ShouldEqual, "database")
         })
 
         Convey("should Unmarschal the actual response into the response object", func() {
-            So(rb.ResponseObject[1], ShouldEqual, "[Database Database transaction Database index]")
+            e := w[1].([]interface{}) // that is not optimal
+            So(e[2], ShouldEqual, "Database index")
         })
     })
 }
