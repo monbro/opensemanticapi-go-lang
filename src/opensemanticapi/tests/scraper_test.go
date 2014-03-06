@@ -39,6 +39,8 @@ func TestScraper(t *testing.T) {
         rb := new(scraper.RequestBit)
         rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
         rb.ResponseObject = new(requestStruct.WikiSearch)
+        // w := *rb.ResponseObject.(*requestStruct.WikiSearch)
+
 
         // 1) actually responseobject is accessiable if it is an array slice
         // rb.ResponseObject = make(requestStruct.WikiSearch, 2, 100)
@@ -60,23 +62,10 @@ func TestScraper(t *testing.T) {
 
         Convey("should Unmarschal the actual response into the response object", func() {
             So(rb.ResponseObject[0], ShouldEqual, "*requestStruct.WikiSearch")
-
-
-
-            // w := *rb.ResponseObject.(*requestStruct.WikiSearch)
-            // So(w[0], ShouldEqual, "database")
-            // So(w[0], ShouldEqual, "database")
         })
 
-        // Convey("should Unmarschal the actual response into the response object", func() {
-        //     So(rb.ResponseObject[1], ShouldEqual, "[Database Database transaction Database index]")
-
-        //         for k, v := range rb.ResponseObject {
-        //             log.Printf("%+v", k)
-        //             log.Printf("%+v", v)
-        //             log.Printf("%+v", reflect.TypeOf(v).String())
-
-        //         }
-        // })
+        Convey("should Unmarschal the actual response into the response object", func() {
+            So(rb.ResponseObject[1], ShouldEqual, "[Database Database transaction Database index]")
+        })
     })
 }
