@@ -16,7 +16,8 @@ import (
 type RequestBit struct {
     Url string
     PlainResponse string
-    ResponseObject interface{} // you need to make this an array for makring 1) to work
+    ResponseObjectInterface interface{}
+    ResponseObjectRawJson []json.RawMessage
 }
 
 /**
@@ -27,17 +28,22 @@ func (rb *RequestBit) Work() {
         panic("No Url provided!")
     }
 
-    if(rb.ResponseObject == nil) {
-        panic("No Response Struct provided!")
-    }
+    // if(rb.ResponseObject == nil) {
+    //     panic("No Response Struct provided!")
+    // }
 
     b := rb.GetByteCodeFromUrl()
     rb.PlainResponse = string(b[:])
 
     // now parse the response into the given struct object
 
+    // fill the interface
+    json.Unmarshal(b, &rb.ResponseObjectInterface)
 
-    json.Unmarshal(b, &rb.ResponseObject)
+    // fill the raw json
+    json.Unmarshal(b, &rb.ResponseObjectRawJson)
+
+
     // log.Printf("CUSTOM: %+v", rb.ResponseObject)
 
     // typeName := reflect.TypeOf(rb.ResponseObject).String()
@@ -64,6 +70,12 @@ func (rb *RequestBit) GetByteCodeFromUrl() []byte{
 
     b, _ = ioutil.ReadAll(r.Body)
     r.Body.Close()
+
+    return b
+}
+
+func (rb *RequestBit) GetByteCodeFromUrlFake() []byte{
+    b := []byte(`["database",["Database","Database transaction","Database index"]]`) // fake json response
 
     return b
 }
