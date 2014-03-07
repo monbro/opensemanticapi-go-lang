@@ -22,7 +22,7 @@ type RequestBit struct {
  * will actually do the http get request
  */
 func (rb *RequestBit) Work() {
-    if(rb.Url == "") {
+    if rb.Url == "" {
         panic("No Url provided!")
     }
 
@@ -53,6 +53,9 @@ func (rb *RequestBit) GetByteCodeFromUrl() []byte{
     return b
 }
 
+/**
+ * hopefully used later as a mock or something
+ */
 func (rb *RequestBit) GetByteCodeFromUrlFake() []byte{
     b := []byte(`["database",["Database","Database transaction","Database index"]]`) // fake json response
 
