@@ -6,42 +6,24 @@ import(
     "opensemanticapi/scraper"
     "opensemanticapi/requestStruct"
     "reflect"
-    // "log"
+    "log"
+    "encoding/json"
 )
 
-// func TestScraper(t *testing.T) {
-//     Convey("Testing the scraper", t, func() {
-//         // catch a suggested list of results for a random keyword
-//         url := "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
-//         val := scraper.WikiSearch(url)
-
-//         // this test is very basic and of course the result of this api request will change someday
-//         Convey(`The result should be a string`, func() {
-//             So(val[1], ShouldEqual, "Database transaction")
-//         })
-
-//         Convey("val should not be nil", func() {
-//             So(val, ShouldNotBeNil)
-//         })
-
-//         Convey("val should not be nil", func() {
-//             res := scraper.WikiGrab(val[1].(string))
-
-//             So(res, ShouldNotBeNil)
-//             So(res, ShouldEqual, "Database transaction")
-//         })
-//     })
-// }
-
 func TestScraper(t *testing.T) {
-    Convey("Testing the scraper struct RequestBit with all its functions", t, func() {
-
+    Convey("Testing the scraper to search within wikipedia", t, func() {
         rb := new(scraper.RequestBit)
         rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
-        rb.ResponseObject = new(requestStruct.WikiSearch)
-
         rb.Work()
-        w := *rb.ResponseObject.(*requestStruct.WikiSearch)
+        response := new(requestStruct.WikiSearch)
+
+        if err := json.Unmarshal(rb.ResponseObjectRawJson[0], &response.SearchTerm); err != nil {
+            log.Fatalln("expect string:", err)
+        }
+
+        if err := json.Unmarshal(rb.ResponseObjectRawJson[1], &response.Results); err != nil {
+            log.Fatalln("expect []string:", err)
+        }
 
         Convey("should have the correct url", func() {
             So(rb.Url, ShouldEqual, "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3")
@@ -52,16 +34,40 @@ func TestScraper(t *testing.T) {
         })
 
         Convey("should store the given struct as a the response object", func() {
-            So(reflect.TypeOf(rb.ResponseObject).String(), ShouldEqual, "*requestStruct.WikiSearch")
+            So(reflect.TypeOf(rb.ResponseObjectRawJson).String(), ShouldEqual, "[]json.RawMessage")
         })
 
         Convey("should Unmarschal the actual response into the response object", func() {
-            So(w[0], ShouldEqual, "database")
+            So(response.SearchTerm, ShouldEqual, "database")
         })
 
         Convey("should Unmarschal the actual response into the response object", func() {
-            e := w[1].([]interface{}) // that is not optimal
-            So(e[2], ShouldEqual, "Database index")
+            So(response.Results[2], ShouldEqual, "Database index")
+        })
+    })
+
+    Convey("Testing the scraper to get a page from wikipedia", t, func() {
+        rb := new(scraper.RequestBit)
+        rb.Url = "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=Yanqing_County"
+        rb.ResponseObjectInterface = new(requestStruct.WikiPage)
+        rb.Work()
+        response := *rb.ResponseObjectInterface.(*requestStruct.WikiPage)
+
+        Convey("should have the correct url", func() {
+            So(rb.Url, ShouldEqual, "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles=Yanqing_County")
+        })
+
+        Convey("should store the plain response string", func() {
+            So(rb.PlainResponse, ShouldNotEqual, nil)
+        })
+
+        Convey("should store the given struct as a the response object", func() {
+            So(reflect.TypeOf(response).String(), ShouldEqual, "requestStruct.WikiPage")
+        })
+
+        Convey("should Unmarschal the actual response into the response object", func() {
+            So(response.Query.Pages["2256752"].Title, ShouldEqual, "Yanqing County")
+            So(response.Query.Pages["2256752"].PageId, ShouldEqual, 2256752)
         })
     })
 }

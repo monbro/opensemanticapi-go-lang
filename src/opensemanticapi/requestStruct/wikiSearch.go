@@ -7,4 +7,7 @@ package requestStruct
 import (
 )
 
-type WikiSearch []interface{}
+type WikiSearch struct {
+    SearchTerm string
+    Results    []string
+}
