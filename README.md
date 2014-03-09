@@ -65,7 +65,6 @@ The following examples where given after the system was collecting for about one
 * function names always starting with a uppercase letter
 * GOROOT should be set to go lang itself
 * GOPATH should be set to where your go projects are
-
 * http://www.golangpatterns.info/object-oriented/classes
 * http://blog.golang.org/laws-of-reflection
 * http://golang.org/pkg/reflect/
