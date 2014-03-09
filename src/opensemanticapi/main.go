@@ -1,9 +1,10 @@
 package main
+
 import (
     "log"
     "encoding/json"
-    "opensemanticapi/scraper"
-    "opensemanticapi/requestStruct"
+    . "github.com/monbro/opensemanticapi/scraper"
+    . "github.com/monbro/opensemanticapi/requestStruct"
 )
 
 func main() {

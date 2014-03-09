@@ -7,8 +7,8 @@ package tests
 import(
     "testing"
     . "github.com/smartystreets/goconvey/convey"
-    "opensemanticapi/scraper"
-    "opensemanticapi/requestStruct"
+    "github.com/monbro/opensemanticapi/scraper"
+    "github.com/monbro/opensemanticapi/requestStruct"
     "reflect"
     "log"
     "encoding/json"
