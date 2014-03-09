@@ -3,8 +3,8 @@ package main
 import (
     "log"
     "encoding/json"
-    . "github.com/monbro/opensemanticapi/scraper"
-    . "github.com/monbro/opensemanticapi/requestStruct"
+    "github.com/monbro/opensemanticapi/scraper"
+    "github.com/monbro/opensemanticapi/requestStruct"
 )
 
 func main() {

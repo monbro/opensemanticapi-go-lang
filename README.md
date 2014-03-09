@@ -43,22 +43,27 @@ The following examples where given after the system was collecting for about one
 * install your redis server (http://redis.io/topics/quickstart) on a disk with several free GB
 * start your redis server with ```redis-server``` on a new console tab
 * clone this repo ```git clone https://github.com/monbro/opensemanticapi.git```
-* ```export GOPATH=/absolute/path/to/opensemanticapi```
+* ```export GOPATH=/your/go/workspace/folder/```
+* ```cd $GOPATH``
 * ```go get -d -v ./... && go build -v ./...``` to install all go dependencies - go will lookup on all import path's and grab the needed repos itself - pretty awesome
 
 **How to run the main program**
 
-* ```go run src/opensemanticapi/main.go``` to run the test script
+* ```go run src/github.com/monbro/opensemanticapi/main.go``` to run the test script
+
+**Testing**
+
+* at the moment you need to have a ```redis-server``` running
 
 **How to run all test's manually**
 
-* ```go test opensemanticapi/tests```
+* ```go test github.com/monbro/opensemanticapi/tests```
 
 **How to run the goconvey test's server**
 
-* ```export GOROOT=/path/to/go/projects/opensemanticapi```
-* switch into the folder where you want to watch the tests, e.g. 'cd src/opensemanticapi/'
-* ```$GOPATH/bin/goconvey```
+* ensure that you installed goconvey proper ```https://github.com/smartystreets/goconvey#installation```
+* switch into the folder where you want to watch the tests, e.g. 'cd src/github.com/monbro/opensemanticapi/'
+* run the test server```$GOPATH/bin/goconvey```
 * access the webinterface on http://localhost:8080
 
 **NOTE's**
@@ -69,6 +74,5 @@ The following examples where given after the system was collecting for about one
 * http://www.golangpatterns.info/object-oriented/classes
 * http://blog.golang.org/laws-of-reflection
 * http://golang.org/pkg/reflect/
-
 
 This software is published under the MIT-License. See 'license' for more information.
