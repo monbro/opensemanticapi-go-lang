@@ -10,5 +10,6 @@ branches:
   only:
     - go-lang
 
-before_install:
-  - git submodule update --init
+# http://docs.travis-ci.com/user/database-setup/#Redis
+services:
+  - redis-server
