@@ -1,4 +1,5 @@
 .DS_Store
 dump.rdb
 /bin/
+/src/github.com
 /pkg/

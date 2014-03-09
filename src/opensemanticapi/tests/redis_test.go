@@ -3,7 +3,7 @@ package tests
 import(
     "testing"
     . "github.com/smartystreets/goconvey/convey"
-    "redis"
+    . "github.com/alphazero/Go-Redis"
     "log"
     "time"
 )

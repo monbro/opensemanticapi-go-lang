@@ -1,6 +1,8 @@
 opensemanticapi
 ===============
 
+[![Build Status](https://travis-ci.org/monbro/opensemanticapi.png?branch=go-lang)](https://travis-ci.org/monbro/opensemanticapi)
+
 **Works with GO LANG**
 
 **This is a developer branch**
@@ -42,7 +44,7 @@ The following examples where given after the system was collecting for about one
 * start your redis server with ```redis-server``` on a new console tab
 * clone this repo ```git clone https://github.com/monbro/opensemanticapi.git```
 * ```export GOPATH=/absolute/path/to/opensemanticapi```
-* ```git submodule init --udpate```
+* ```git submodule update --init```
 * ```go get -d -v ./... && go build -v ./...``` to install all go dependencies
 
 **How to run the main program**
