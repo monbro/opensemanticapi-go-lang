@@ -7,6 +7,9 @@
 [submodule "src/github.com/jacobsa/ogletest"]
     path = src/github.com/jacobsa/ogletest
     url = git://github.com/jacobsa/ogletest.git
+[submodule "src/github.com/jacobsa/oglemock"]
+    path = src/github.com/jacobsa/oglemock
+    url = git://github.com/jacobsa/oglemock.git
 [submodule "src/github.com/smartystreets/goconvey"]
     path = src/github.com/smartystreets/goconvey
     url = git://github.com/smartystreets/goconvey.git
