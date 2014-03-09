@@ -1,5 +1,9 @@
 package tests
 
+/**
+ * TODO: mock the json response from the wikipedia api
+ */
+
 import(
     "testing"
     . "github.com/smartystreets/goconvey/convey"

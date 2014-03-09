@@ -1,8 +1,6 @@
 package main
 import (
-    // "flag"
     "log"
-    "redis"
     "encoding/json"
     "opensemanticapi/scraper"
     "opensemanticapi/requestStruct"
@@ -11,33 +9,6 @@ import (
 func main() {
     searchWikipedia()
     getWikipediaPage()
-    testRedis()
-}
-
-func testRedis() {
-    // Parse command-line flags; needed to let flags used by Go-Redis be parsed.
-    // flag.Parse()
-
-    spec := redis.DefaultSpec().Db(13).Password("")
-    client, e := redis.NewSynchClientWithSpec(spec)
-    if e != nil {
-        log.Println("failed to create the client", e)
-        return
-    }
-
-    key := "testkey"
-
-    input := []byte("Testinput")
-
-    client.Set(key, input)
-
-    value, e := client.Get(key)
-    if e != nil {
-        log.Println("error on Get", e)
-        return
-    }
-
-    log.Printf("This was stored and fetched in Redis: %s!\n", value)
 }
 
 func searchWikipedia() {
