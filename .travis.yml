@@ -9,3 +9,6 @@ script: go test opensemanticapi/tests
 branches:
   only:
     - go-lang
+
+before_install:
+  - git submodule update --init
