@@ -1,0 +1,11 @@
+# http://docs.travis-ci.com/user/languages/go/
+language: go
+
+go:
+  - 1.2.1
+
+script: go test opensemanticapi/tests
+
+branches:
+  only:
+    - go-lang
