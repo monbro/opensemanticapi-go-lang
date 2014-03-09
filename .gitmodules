@@ -1,6 +1,3 @@
-[submodule "src/redis"]
-	path = src/redis
-	url = git://github.com/alphazero/Go-Redis.git
 [submodule "src/github.com/jacobsa/oglematchers"]
 	path = src/github.com/jacobsa/oglematchers
 	url = git://github.com/jacobsa/oglematchers.git
