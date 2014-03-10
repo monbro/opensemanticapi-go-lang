@@ -21,11 +21,18 @@ type WikiPage struct {
     Query SubType `json:"query"`
 }
 
+type SubType struct {
+    Pages map[string]ActualPage `json:"pages"`
+}
+
 type ActualPage struct {
     PageId int  `json:"pageid"`
     Title string `json:"title"`
+    Rev []Revision `json:"revisions"`
 }
 
-type SubType struct {
-    Pages map[string]ActualPage `json:"pages"`
+type Revision struct {
+    ContentFormat string `json:"contentformat"`
+    ContentModel string `json:"contentmodel"`
+    RawContent string `json:"*"`
 }

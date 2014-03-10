@@ -74,5 +74,7 @@ The following examples where given after the system was collecting for about one
 * http://www.golangpatterns.info/object-oriented/classes
 * http://blog.golang.org/laws-of-reflection
 * http://golang.org/pkg/reflect/
+* https://code.google.com/p/go-wiki/wiki/GithubCodeLayout
+* http://golang.org/doc/code.html
 
 This software is published under the MIT-License. See 'license' for more information.
