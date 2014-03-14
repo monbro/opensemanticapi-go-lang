@@ -1,64 +1,65 @@
 package main
 
 import (
-    "log"
-    "net/url"
-    "encoding/json"
-    "github.com/monbro/opensemanticapi/scraper"
-    "github.com/monbro/opensemanticapi/requestStruct"
-    "github.com/monbro/opensemanticapi/database"
+    "github.com/monbro/opensemanticapi/analyse"
+)
+
+/**
+ * configurations constantes
+ */
+const (
+    SNIPPET_LENGTH = 120
+    START_SEARCH_TERM = "database"
 )
 
 func main() {
-    var pages []string
-
-    pages = searchWikipedia("database")
-    log.Printf("Searchterm: %+v", pages[2])
-
-    // works but not used yet
-    // rawContent := getWikipediaPage(pages[1])
-    // log.Printf("Page Response: %+v", rawContent)
-
-    db := new(database.Database)
-    db.Password = ""
-    db.DbNum = 13
-    db.AddPageToQueue(pages[2])
+    worker := new(analyse.Worker)
+    worker.START_SEARCH_TERM = START_SEARCH_TERM
+    worker.SNIPPET_LENGTH = SNIPPET_LENGTH
+    worker.Run()
 }
 
-func searchWikipedia(searchTerm string) []string {
-    rb := new(scraper.RequestBit)
-    rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search="+url.QueryEscape(searchTerm)+"&format=json&limit=3"
-    rb.Work()
 
-    result := new(requestStruct.WikiSearch)
+// func mainOld() {
+//     // declare needed variables
+//     var pages []string
 
-    if err := json.Unmarshal(rb.ResponseObjectRawJson[0], &result.SearchTerm); err != nil {
-        log.Fatalln("expect string:", err)
-    }
+//     db := new(database.Database)
+//     db.Init("", 13)
 
-    if err := json.Unmarshal(rb.ResponseObjectRawJson[1], &result.Results); err != nil {
-        log.Fatalln("expect []string:", err)
-    }
+//     // initial search request to get some pages back
+//     pages = searchWikipedia("database")
+//     searchTerm := pages[0]
+//     log.Printf("Searchterm: %+v", searchTerm)
 
-    log.Printf("Searchterm: %+v", result)
-    log.Printf("Second result item: %+v", result.Results[1])
+//     // get a slice which will exclude the first element as we processing this one soon
+//     pagesToQueue := pages[1:]
 
-    return result.Results
-}
+//     // add all other pages to the queue
+//     for i := range pagesToQueue {
+//         db.AddPageToQueue(pagesToQueue[i])
+//         log.Printf("Added page to queue: '%+v'",pagesToQueue[i])
+//     }
 
-func getWikipediaPage(firstPage string) string {
-    // test to grab a page content
-    rb2 := new(scraper.RequestBit)
-    rb2.Url = "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles="+url.QueryEscape(firstPage)
+//     // process first page now
+//     rawContent := getWikipediaPage(pages[1])
+//     // log.Printf("Page Response Processed: %+v", requestStruct.GetWikiRawTextRegexpr(rawContent))
+//     // log.Printf("Page Response Processed: %+v", rawContent)
 
-    rb2.ResponseObjectInterface = new(requestStruct.WikiPage)
-    rb2.Work()
+//     re := regexp.MustCompile("\n|\r")
+//     snippets := re.Split(rawContent, -1)
 
-    w2 := *rb2.ResponseObjectInterface.(*requestStruct.WikiPage)
+//     log.Printf("Length snippets: %+v", len(snippets))
+//     // log.Printf("Length snippets: %+v", snippets[10])
 
-    for _, value := range w2.Query.Pages {
-        return value.Rev[0].RawContent
-    }
+//     for i := range snippets {
+//         if SNIPPET_LENGTH < len(snippets[i]) {
+//             log.Printf("LENG SNIPPET: '%+v'",len(snippets[i]))
+//             log.Printf("Snippets raw content: %+v", requestStruct.GetWikiRawTextRegexpr(snippets[i]))
+//             log.Printf("==========================================================================================")
+//         }
+//     }
 
-    return ""
-}
+//     // @TODO: strip also content between a block
+
+// }

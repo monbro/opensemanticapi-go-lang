@@ -11,6 +11,10 @@ import (
     "encoding/json"
 )
 
+/**
+ * will prove a struct to hold a custom struct called 'ResponseObjectInterface' which will match to the json response
+ * and in the case of a not well formated json response 'ResponseObjectRawJson' will allow the access of the raw json response string
+ */
 type RequestBit struct {
     Url string
     PlainResponse string

@@ -15,6 +15,11 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 ![ScreenShot](https://raw.github.com/monbro/opensemanticapi/master/infographic.png)
 
+**Concerns**
+
+I thought about using a wikipedia database dump file which is available here http://dumps.wikimedia.org.
+But I came to the conclusion that I do want to work in a direction to work with api data as a dump is not always available. So please see this wikipedia api scraping method as a temporary solution as it is inefficient for our case.
+
 **Examples**
 
 The following examples where given after the system was collecting for about one hour only.
@@ -76,5 +81,6 @@ The following examples where given after the system was collecting for about one
 * http://golang.org/pkg/reflect/
 * https://code.google.com/p/go-wiki/wiki/GithubCodeLayout
 * http://golang.org/doc/code.html
+* http://godoc.org/?q=markdown // good to search anything go related
 
 This software is published under the MIT-License. See 'license' for more information.

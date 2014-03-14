@@ -12,13 +12,11 @@ import (
 )
 
 type Database struct {
-    Password string
-    DbNum int
     Client redis.Client
 }
 
-func (db *Database) AddPageToQueue(pageName string) {
-    spec := redis.DefaultSpec().Db(db.DbNum).Password(db.Password)
+func (db *Database) Init(Password string, DbNum int) {
+    spec := redis.DefaultSpec().Db(DbNum).Password(Password)
 
     var e redis.Error
     db.Client, e = redis.NewSynchClientWithSpec(spec)
@@ -27,7 +25,9 @@ func (db *Database) AddPageToQueue(pageName string) {
         log.Println("failed to create the client", e)
         return
     }
+}
 
+func (db *Database) AddPageToQueue(pageName string) {
     key := "queued_page_title"
     input := []byte(pageName)
 
@@ -37,4 +37,22 @@ func (db *Database) AddPageToQueue(pageName string) {
         log.Println("failed to create the client", e2)
         return
     }
+}
+
+func (db *Database) AddPagesToQueue(pagesToQueue []string) {
+    for i := range pagesToQueue {
+        db.AddPageToQueue(pagesToQueue[i])
+        log.Printf("Added page to queue: '%+v'",pagesToQueue[i])
+    }
+}
+
+func (db *Database) AddWordRelation(word string, relation string) {
+    log.Printf("Added new relation '%+v'", relation)
+    log.Printf("to word '%+v'", word)
+    // @TODO implement
+}
+
+func (db *Database) FindWordRelations(word string) []string {
+    // @TODO implement
+    return []string{"test", "test1"}
 }
