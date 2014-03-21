@@ -38,8 +38,8 @@ func (w *Worker) RunNext(searchTerm string) {
     // declare needed variables
     var pages []string
 
-    w.Db = new(database.Database)
-    w.Db.Init("", 13)
+    // w.Db = new(database.Database)
+    // w.Db.Init("", 13)
 
     // initial search request to get some pages back
     pages = SearchWikipedia(searchTerm)
@@ -47,7 +47,11 @@ func (w *Worker) RunNext(searchTerm string) {
 
     // get a slice which will exclude the first element as we processing this one soon
     pagesToQueue := pages[1:]
-    w.Db.AddPagesToQueue(pagesToQueue)
+    // w.Db.AddPagesToQueue(pagesToQueue)
+
+    for i := range pagesToQueue {
+        log.Printf("Paged to quque: %+v", pagesToQueue[i])
+    }
 
     rawContent := GetWikipediaPage(pages[0])
 
@@ -67,7 +71,7 @@ func (w *Worker) RunNext(searchTerm string) {
     }
 
     // create aloop by calling it self for the next search term
-    w.RunNext(w.Db.RandomPageFromQueue())
+    // w.RunNext(w.Db.RandomPageFromQueue())
 }
 
 /**
@@ -77,7 +81,7 @@ func SearchWikipedia(searchTerm string) []string {
     // lets create a new http request object
     rb := new(scraper.RequestBit)
 
-    rb.Url = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+url.QueryEscape(searchTerm)+"&format=json&limit=3"
+    rb.Url = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+url.QueryEscape(searchTerm)+"&format=json"
     log.Printf("Url crawling in SearchWikipedia: %+v", rb.Url)
 
     // inject the struct for the json response
@@ -89,10 +93,12 @@ func SearchWikipedia(searchTerm string) []string {
     var results []string
 
     for _, value := range w2.Query.Search {
-        results[] = value.Rev[0].RawContent
+        // results[len(results)] = value.Rev[0].RawContent
+        // http://blog.golang.org/slices
+        results = append(results, value.Title)
     }
 
-    return wikiOpenSearch.Results
+    return results
 }
 
 /**

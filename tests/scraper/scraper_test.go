@@ -1,52 +1,42 @@
 package tests
 
-/**
- * TODO: mock the json response from the wikipedia api
- */
-
 import(
     "testing"
     . "github.com/smartystreets/goconvey/convey"
     "github.com/monbro/opensemanticapi/scraper"
     "github.com/monbro/opensemanticapi/requestStruct"
+    "net/url"
     "reflect"
     "log"
-    "encoding/json"
 )
 
 func TestScraper(t *testing.T) {
     Convey("Testing the scraper to search within wikipedia", t, func() {
         rb := new(scraper.RequestBit)
-        rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3"
+        rb.Url = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+url.QueryEscape("database")+"&format=json"
+
+        rb.ResponseObjectInterface = new(requestStruct.WikiSearch)
         rb.Work()
-        response := new(requestStruct.WikiSearch)
-
-        if err := json.Unmarshal(rb.ResponseObjectRawJson[0], &response.SearchTerm); err != nil {
-            log.Fatalln("expect string:", err)
-        }
-
-        if err := json.Unmarshal(rb.ResponseObjectRawJson[1], &response.Results); err != nil {
-            log.Fatalln("expect []string:", err)
-        }
+        response := *rb.ResponseObjectInterface.(*requestStruct.WikiSearch)
 
         Convey("should have the correct url", func() {
-            So(rb.Url, ShouldEqual, "http://en.wikipedia.org/w/api.php?action=opensearch&search=database&format=json&limit=3")
+            So(rb.Url, ShouldEqual, "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=database&format=json")
         })
 
         Convey("should store the plain response string", func() {
-            So(rb.PlainResponse, ShouldEqual, "[\"database\",[\"Database\",\"Database transaction\",\"Database index\"]]")
+            So(rb.PlainResponse, ShouldContainSubstring, `"title":"Database","snippet":"A <span class='searchmatch'>database</span> is an organized collection of data .`)
+            So(rb.PlainResponse, ShouldContainSubstring, `{"query-continue":{"search":{"sroffset":10}},"query":{"searchinfo":`)
         })
 
         Convey("should store the given struct as a the response object", func() {
-            So(reflect.TypeOf(rb.ResponseObjectRawJson).String(), ShouldEqual, "[]json.RawMessage")
+            log.Printf("Length word list: %+v", rb.ResponseObjectRawJson)
+            So(reflect.TypeOf(rb.ResponseObjectRawJson).String(), ShouldEqual, "json.RawMessage")
+            So(reflect.TypeOf(rb.ResponseArrayRawJson).String(), ShouldEqual, "[]json.RawMessage")
         })
 
-        Convey("should Unmarschal the actual response into the response object", func() {
-            So(response.SearchTerm, ShouldEqual, "database")
-        })
-
-        Convey("should Unmarschal the actual response into the response object", func() {
-            So(response.Results[2], ShouldEqual, "Database index")
+        Convey("should Unmarschal the actual response into the response object and the first result should be ", func() {
+            So(response.Query.Search[0].Title, ShouldEqual, "Database")
+            So(len(response.Query.Search), ShouldBeGreaterThan, 0)
         })
     })
 
@@ -72,6 +62,10 @@ func TestScraper(t *testing.T) {
         Convey("should Unmarschal the actual response into the response object", func() {
             So(response.Query.Pages["2256752"].Title, ShouldEqual, "Yanqing County")
             So(response.Query.Pages["2256752"].PageId, ShouldEqual, 2256752)
+        })
+
+        Convey("should Unmarschal the actual response into the response object and contain the wanted data", func() {
+            So(response.Query.Pages["2256752"].Rev[0].RawContent, ShouldContainSubstring, `name = {{raise|0.2em|Yanqing County}}`)
         })
     })
 }

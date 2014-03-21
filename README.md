@@ -58,11 +58,20 @@ The following examples where given after the system was collecting for about one
 
 **Testing**
 
-* at the moment you need to have a ```redis-server``` running
+* needs to be written
+
+**Add new tests**
+
+* check the goconvey documenation: https://github.com/smartystreets/goconvey/wiki/Documentation
+* and check the available assertions: https://github.com/smartystreets/goconvey/wiki/Assertions
 
 **How to run all test's manually**
 
-* ```go test github.com/monbro/opensemanticapi/tests```
+* ```go test github.com/monbro/opensemanticapi/tests/scraper```
+* ```go test github.com/monbro/opensemanticapi/tests/database```
+* ```go test github.com/monbro/opensemanticapi/tests/analyse```
+* ```go test github.com/monbro/opensemanticapi/tests/api```
+* ```go test github.com/monbro/opensemanticapi/tests/requestStruct```
 
 **How to run the goconvey test's server**
 

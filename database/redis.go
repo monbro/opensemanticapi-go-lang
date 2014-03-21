@@ -91,13 +91,55 @@ func (db *Database) RandomPageFromQueue() string {
 }
 
 func (db *Database) AddWordRelation(word string, relation string) {
+    // @TODO implement
+    // - if relations exists already putt the counter higher
     log.Printf("Added new relation '%+v'", relation)
     log.Printf("to word '%+v'", word)
-    // @TODO implement
+
+    input := []byte(relation)
+    _, e := db.Client.Sadd(word, input)
+
+    if e != nil {
+        log.Println("failed to add relations for this one", e)
+        // panic("No Url provided!")
+    }
+
+    // increase counter for relation by one
+    db.Client.Incrby(word+":"+relation, 1);
 }
 
-func (db *Database) FindWordRelations(word string) []string {
+func (db *Database) GetPopularWordRelationsOld(word string) []string {
     // @TODO implement
-    return []string{"test", "test1"}
+    // - return a array ordered by the most popular DESC
+    // - will be limited to a certain amount within the db query
+
+    log.Printf("Recevive for '%+v'", word)
+
+    wordRelationsBytes, e := db.Client.Smembers(word)
+    if e != nil {
+        log.Println("failed to get relations for this one", e)
+        // panic("No Url provided!")
+    }
+
+    log.Printf("Len '%+v'", len(wordRelationsBytes))
+
+    // allRelations := []string{"test", "test1"}
+
+    var allRelations []string
+    for i := range wordRelationsBytes {
+        allRelations = append(allRelations, string(wordRelationsBytes[i][:]))
+        log.Printf("Loop '%+v'", string(wordRelationsBytes[i][:]))
+    }
+
+    return allRelations
 }
+
+// func (db *Database) GetPopularWordRelations(word string) []string {
+//     db.Client.Sort(owner, "by", owner+":*", 'LIMIT', 0, 120, 'DESC', "get", "#",
+
+
+//     return allRelations
+// }
+
+
 
