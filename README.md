@@ -50,11 +50,16 @@ The following examples where given after the system was collecting for about one
 * ```cd $GOPATH``
 * ```go get -d -v ./... && go build -v ./...``` to install all go dependencies - go will lookup on all import path's and grab the needed repos itself - pretty awesome
 
-**How to run the main program**
+**How to run the cronjob / scraper**
 
-* ```go run src/github.com/monbro/opensemanticapi/main.go``` to run the test script
+* ```go run src/github.com/monbro/opensemanticapi/cronjob.go``` to run the test script
 if you are in the terminal of the redis-cli you can check the result with ```select 10``` to be in the correct datbase
 and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get a example
+
+**How to run the REST API**
+
+* ```go run src/github.com/monbro/opensemanticapi/api_server.go``` to launch the REST API server script
+* shoule be now accessible via http://localhost:3000/relation/database
 
 **Testing**
 
