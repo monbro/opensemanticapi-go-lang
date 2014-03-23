@@ -11,7 +11,7 @@ branches:
 # http://docs.travis-ci.com/user/languages/go/#Dependency-Management
 install:
   - go get github.com/smartystreets/goconvey/convey
-  - go get github.com/alphazero/Go-Redis
+  - go get github.com/garyburd/redigo/redis
 
 # http://docs.travis-ci.com/user/database-setup/#Redis
 services:
