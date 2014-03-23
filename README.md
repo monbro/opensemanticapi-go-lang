@@ -11,7 +11,7 @@ opensemanticapi
 
 Will allow you to create your own semantic wording database with redis. Otherwise there will be a open api to get related words by meaning. You could say, this implementation is a light version of the idea behind http://en.wikipedia.org/wiki/Latent_semantic_analysis in combination with http://en.wikipedia.org/wiki/Open-source_intelligence
 
-![ScreenShot](https://raw.github.com/monbro/opensemanticapi/master/infographic.png)
+![ScreenShot](https://raw.github.com/monbro/opensemanticapi/blob/go-lang/osapi_explanation.jpg)
 
 **Concerns**
 

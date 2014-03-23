@@ -12,6 +12,7 @@ branches:
 install:
   - go get github.com/smartystreets/goconvey/convey
   - go get github.com/garyburd/redigo/redis
+  - go get github.com/codegangsta/martini
 
 # http://docs.travis-ci.com/user/database-setup/#Redis
 services:
