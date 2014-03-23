@@ -17,14 +17,14 @@ func TestwikiPage(t *testing.T) {
 
         wikiPageStruct := new(requestStruct.WikiPage)
 
-        if err := json.Unmarshal(b, &wikiPageStruct); err != nil {
+        if err := json.Unmarshal(fakeWikipediaJsonResponseByte, &wikiPageStruct); err != nil {
             log.Printf("error within json.Unmarshal for wikiPageStruct:", err)
         }
 
         So(len(wikiPageStruct.Query.Pages), ShouldEqual, 1)
 
         // because wikipedia's api is really awesome, we have to loop trough the dynamic response key
-        for _, value := range w2.Query.Pages {
+        for _, value := range wikiPageStruct.Query.Pages {
             So(value.Rev[0].ContentModel, ShouldEqual, "wikitext")
         }
 

@@ -17,12 +17,14 @@ func TestWikiSearch(t *testing.T) {
 
         wikiSearchStruct := new(requestStruct.WikiSearch)
 
-        if err := json.Unmarshal(b, &wikiSearchStruct); err != nil {
+        if err := json.Unmarshal(fakeWikipediaJsonResponseByte, &wikiSearchStruct); err != nil {
             log.Printf("error within json.Unmarshal for wikiSearchStruct:", err)
         }
 
+        log.Printf("Added page to queue: '%+v'", wikiSearchStruct)
+
         So(len(wikiSearchStruct.Query.Search), ShouldEqual, 10)
-        So(len(wikiSearchStruct.Query.Search[1].Title), ShouldEqual, "Geographic Names Information System")
-        So(len(wikiSearchStruct.Query.Searchinfo.TotalHits), ShouldEqual, 182461)
+        So(wikiSearchStruct.Query.Search[1].Title, ShouldEqual, "Geographic Names Information System")
+        So(wikiSearchStruct.Query.Searchinfo.TotalHits, ShouldEqual, 182461)
     })
 }
