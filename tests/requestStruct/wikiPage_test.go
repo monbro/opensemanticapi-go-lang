@@ -5,6 +5,7 @@ import(
     . "github.com/smartystreets/goconvey/convey"
     "github.com/monbro/opensemanticapi/requestStruct"
     "encoding/json"
+    "log"
 )
 
 func TestwikiPage(t *testing.T) {

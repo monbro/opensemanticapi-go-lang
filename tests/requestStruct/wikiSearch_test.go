@@ -5,6 +5,7 @@ import(
     . "github.com/smartystreets/goconvey/convey"
     "github.com/monbro/opensemanticapi/requestStruct"
     "encoding/json"
+    "log"
 )
 
 func TestWikiSearch(t *testing.T) {
@@ -22,6 +23,6 @@ func TestWikiSearch(t *testing.T) {
 
         So(len(wikiSearchStruct.Query.Search), ShouldEqual, 10)
         So(len(wikiSearchStruct.Query.Search[1].Title), ShouldEqual, "Geographic Names Information System")
-        So(len(wikiSearchStruct.Searchinfo.TotalHits), ShouldEqual, 182461)
+        So(len(wikiSearchStruct.Query.Searchinfo.TotalHits), ShouldEqual, 182461)
     })
 }

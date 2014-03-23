@@ -8,7 +8,6 @@ package database
 
 import (
     "github.com/garyburd/redigo/redis"
-    // "errors"
     "log"
 )
 
@@ -48,9 +47,6 @@ func (db *Database) Flushall() {
     }
 }
 
-// have a loook at
-// https://stackoverflow.com/questions/12629801/redigo-smembers-how-to-get-strings
-
 func (db *Database) AddPageToQueue(pageName string) {
 
     // only add page if it is not done
@@ -87,7 +83,6 @@ func (db *Database) RandomPageFromQueue() string {
     }
 
     // remove page as well
-    // _, _ = db.Client.Srem(QUEUED_PAGES, input);
     _, e = db.Client.Do("SREM", QUEUED_PAGES, pageName)
 
     // add page to be done
@@ -105,27 +100,37 @@ func (db *Database) RandomPageFromQueue() string {
 }
 
 func (db *Database) AddWordRelation(word string, relation string) {
-    // @TODO implement
-    // - if relations exists already putt the counter higher
     log.Printf("Added new relation '%+v'", relation)
     log.Printf("to word '%+v'", word)
 
-    // _, e := db.Client.Sadd(word, input)
+    _, e := db.Client.Do("SADD", word, relation)
 
-    // if e != nil {
-    //     log.Println("failed to add relations for this one", e)
-    //     // panic("No Url provided!")
-    // }
+    if e != nil {
+        log.Println("failed to add relations for this one", e)
+    }
 
     // increase counter for relation by one
-    // db.Client.Incrby(word+":"+relation, 1);
-    _, e := db.Client.Do("INCR", word+":"+relation)
+    _, e = db.Client.Do("INCR", word+":"+relation)
 
     if e != nil {
         log.Println("failed to create the client", e)
     }
 }
 
+func (db *Database) GetPopularWordRelations(word string) []string {
+    allRelations, err := redis.Strings(db.Client.Do("SORT", word,
+        "BY", word+":*",
+        "Limit", 0, 120,
+        "DESC",
+        "GET", "#"))
+    if err != nil {
+        panic(err)
+    }
+
+    return allRelations
+}
+
+// keeping for memories or what?? :-)
 // func (db *Database) GetPopularWordRelationsOld(word string) []string {
 //     // @TODO implement
 //     // - return a array ordered by the most popular DESC
@@ -151,13 +156,4 @@ func (db *Database) AddWordRelation(word string, relation string) {
 
 //     return allRelations
 // }
-
-// func (db *Database) GetPopularWordRelations(word string) []string {
-//     db.Client.Sort(owner, "by", owner+":*", 'LIMIT', 0, 120, 'DESC', "get", "#",
-
-
-//     return allRelations
-// }
-
-
 

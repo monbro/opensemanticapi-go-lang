@@ -53,7 +53,6 @@ func TestRedis(t *testing.T) {
 
                 // get a slice which will exclude the first element as we processing this one soon
                 Db.AddPagesToQueue(pagesToQueue)
-                // amountQueuedPages, _ := Db.Client.Smembers(database.QUEUED_PAGES)
                 amountQueuedPages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.QUEUED_PAGES))
 
                 So(len(amountQueuedPages), ShouldEqual, 2)
@@ -68,7 +67,6 @@ func TestRedis(t *testing.T) {
 
                     So(len(amountQueuedPages), ShouldEqual, 1)
 
-                    // amountDonePages, _ := Db.Client.Smembers(database.DONE_PAGES)
                     amountDonePages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.DONE_PAGES))
                     So(len(amountDonePages), ShouldEqual, 1)
                 })
@@ -78,7 +76,7 @@ func TestRedis(t *testing.T) {
         Convey("should add a new relation to a word with a counter and receive it", func() {
 
             word := "bacon"
-            relations := []string{"cheese" ,"ham" ,"gorgonzola" ,"salami" ,"ham" ,"ham"}
+            relations := []string{"cheese" ,"ham" ,"gorgonzola" ,"salami" ,"ham" ,"ham", "cheese"}
 
             Convey("should add all relation", func() {
                 // loop trough all relations
@@ -88,22 +86,21 @@ func TestRedis(t *testing.T) {
             })
 
             Convey("should have added a coutner for ham", func() {
-                // hamCounterByte, _ := Db.Client.Get("bacon:ham")
                 hamCounter, _ := redis.Int(Db.Client.Do("GET", "bacon:ham"))
-
                 So(hamCounter, ShouldEqual, 3)
             })
 
-            // Convey("should have added a coutner for salami", func() {
-            //     hamCounterByte, _ := Db.Client.Get("bacon:salami")
-            //     hamCounter := string(hamCounterByte[:]) // @TODO use proper type -> not string but int conversion
-            //     So(hamCounter, ShouldEqual, "1")
-            // })
+            Convey("should have added a coutner for salami", func() {
+                hamCounter, _ := redis.Int(Db.Client.Do("GET", "bacon:salami"))
+                So(hamCounter, ShouldEqual, 1)
+            })
 
-            // Convey("should receive all distinct existing relation", func() {
-            //     amountRelations := Db.GetPopularWordRelations(word)
-            //     So(len(amountRelations), ShouldEqual, 4)
-            // })
+            Convey("should receive all distinct existing relation", func() {
+                amountRelations := Db.GetPopularWordRelations(word)
+                So(len(amountRelations), ShouldEqual, 4) // because we added 5 distinct keys
+                So(amountRelations[0], ShouldEqual, "ham") // because it was added 3 times
+                So(amountRelations[1], ShouldEqual, "cheese") // because it was added 2 times
+            })
 
         })
 

@@ -69,9 +69,9 @@ The following examples where given after the system was collecting for about one
 
 * ```go test github.com/monbro/opensemanticapi/tests/scraper```
 * ```go test github.com/monbro/opensemanticapi/tests/database```
-* ```go test github.com/monbro/opensemanticapi/tests/analyse```
-* ```go test github.com/monbro/opensemanticapi/tests/api```
-* ```go test github.com/monbro/opensemanticapi/tests/requestStruct```
+* ```go test github.com/monbro/opensemanticapi/tests/analyse``` // still empty
+* ```go test github.com/monbro/opensemanticapi/tests/api``` // not existing yet
+* ```go test github.com/monbro/opensemanticapi/tests/requestStruct``` // broken
 
 **How to run the goconvey test's server**
 
