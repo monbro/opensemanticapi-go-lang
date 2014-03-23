@@ -5,9 +5,7 @@ opensemanticapi
 
 **Works with GO LANG**
 
-**This is a developer branch**
-
-**Current target is to find a suitable database engine**
+**This is a branch is unstable and experimental, but includes a working prototype**
 
 **Description**
 
@@ -71,9 +69,9 @@ and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get
 
 * ```go test github.com/monbro/opensemanticapi/tests/scraper```
 * ```go test github.com/monbro/opensemanticapi/tests/database```
-* ```go test github.com/monbro/opensemanticapi/tests/analyse``` // still empty
-* ```go test github.com/monbro/opensemanticapi/tests/api``` // not existing yet
-* ```go test github.com/monbro/opensemanticapi/tests/requestStruct``` // broken
+* ```go test github.com/monbro/opensemanticapi/tests/analyse``` // @TODO write tests
+* ```go test github.com/monbro/opensemanticapi/tests/api``` // @TODO write tests
+* ```go test github.com/monbro/opensemanticapi/tests/requestStruct```
 
 **How to run the goconvey test's server**
 
