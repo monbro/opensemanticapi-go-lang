@@ -59,7 +59,7 @@ and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get
 **How to run the REST API**
 
 * ```go run src/github.com/monbro/opensemanticapi/api_server.go``` to launch the REST API server script
-* shoule be now accessible via http://localhost:3000/relation/database
+* shoule be now accessible via ```http://localhost:3000/relation/database``` after the cronjob was running once
 
 **Testing**
 
