@@ -34,22 +34,11 @@ func (db *Database) Init(Password string, DbNum int) {
     if err2 != nil {
         log.Println("failed to create the client", err2)
     }
-
-    // spec := redis.DefaultSpec().Db(DbNum).Password(Password)
-
-    // var e redis.Error
-    // db.Client, e = redis.NewSynchClientWithSpec(spec)
-
-    // if e != nil {
-    //     log.Println("failed to create the client", e)
-    //     return
-    // }
 }
 
 func (db *Database) Close() {
     db.Client.Close()
 }
-
 
 func (db *Database) Flushall() {
     var err error
@@ -59,63 +48,61 @@ func (db *Database) Flushall() {
     }
 }
 
-// func (db *Database) AddPageToQueue(pageName string) {
-//     input := []byte(pageName)
+// have a loook at
+// https://stackoverflow.com/questions/12629801/redigo-smembers-how-to-get-strings
 
-//     // only add page if it is not done
-//     isMember, e2 := db.Client.Sismember(DONE_PAGES, input)
-//     if e2 != nil {
-//         log.Println("failed to create the client", e2)
-//         return
-//     }
+func (db *Database) AddPageToQueue(pageName string) {
 
-//     if !isMember {
-//         _, e2 = db.Client.Sadd(QUEUED_PAGES, input)
+    // only add page if it is not done
+    wasProcessed, e2 := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
+    if e2 != nil {
+        log.Println("failed to create the client", e2)
+        return
+    }
 
-//         if e2 != nil {
-//             log.Println("failed to create the client", e2)
-//             return
-//         }
-//         log.Printf("Added page to queue: '%+v'", pageName)
-//     } else {
-//         log.Println("Page is already member in queued pages: ", pageName)
-//     }
-// }
+    if !wasProcessed {
+        _, e2 := db.Client.Do("SADD", QUEUED_PAGES, pageName)
 
-// func (db *Database) AddPagesToQueue(pagesToQueue []string) {
-//     for i := range pagesToQueue {
-//         db.AddPageToQueue(pagesToQueue[i])
-//     }
-// }
+        if e2 != nil {
+            log.Println("failed to create the client", e2)
+            return
+        }
+        log.Printf("Added page to queue: '%+v'", pageName)
+    } else {
+        log.Println("Page is already member in queued pages: ", pageName)
+    }
+}
 
-// func (db *Database) RandomPageFromQueue() string {
-//     pageName, e2 := db.Client.Srandmember(QUEUED_PAGES)
+func (db *Database) AddPagesToQueue(pagesToQueue []string) {
+    for i := range pagesToQueue {
+        db.AddPageToQueue(pagesToQueue[i])
+    }
+}
 
-//     if e2 != nil {
-//         log.Println("failed to create the client", e2)
-//         panic("No Url provided!")
-//     }
+func (db *Database) RandomPageFromQueue() string {
+    pageName, e := redis.String(db.Client.Do("SRANDMEMBER", QUEUED_PAGES))
 
-//     // remove page as well
-//     input := []byte(pageName)
-//     _, _ = db.Client.Srem(QUEUED_PAGES, input);
+    if e != nil {
+        log.Println("failed to create the client", e)
+    }
 
-//     // add page to be done
-//     _, e2 = db.Client.Sadd(DONE_PAGES, input)
+    // remove page as well
+    // _, _ = db.Client.Srem(QUEUED_PAGES, input);
+    _, e = db.Client.Do("SREM", QUEUED_PAGES, pageName)
 
-//     if e2 != nil {
-//         log.Println("failed to create the client", e2)
-//         panic("No Url provided!")
-//     }
+    // add page to be done
+    _, e = db.Client.Do("SADD", DONE_PAGES, pageName)
 
-//     output := string(pageName[:])
+    if e != nil {
+        log.Println("failed to create the client", e)
+    }
 
-//     if output == "" {
-//         panic("No page in queue anymore!!!")
-//     }
+    if pageName == "" {
+        panic("No page in queue anymore!!!")
+    }
 
-//     return output
-// }
+    return pageName
+}
 
 // func (db *Database) AddWordRelation(word string, relation string) {
 //     // @TODO implement

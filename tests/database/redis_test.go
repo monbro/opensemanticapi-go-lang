@@ -43,35 +43,37 @@ func TestRedis(t *testing.T) {
             })
         })
 
-        // Convey("should handle queued pages proper", func() {
+        Convey("should handle queued pages proper", func() {
 
-        //     pagesToQueue := []string{"pageOne","pageTwo"}
+            pagesToQueue := []string{"pageOne","pageTwo"}
 
-        //     Convey("should add pages to the queue by a function call", func() {
+            Convey("should add pages to the queue by a function call", func() {
 
-        //         So(len(pagesToQueue), ShouldEqual, 2)
+                So(len(pagesToQueue), ShouldEqual, 2)
 
-        //         // get a slice which will exclude the first element as we processing this one soon
-        //         Db.AddPagesToQueue(pagesToQueue)
-        //         amountQueuedPages, _ := Db.Client.Smembers(database.QUEUED_PAGES)
+                // get a slice which will exclude the first element as we processing this one soon
+                Db.AddPagesToQueue(pagesToQueue)
+                // amountQueuedPages, _ := Db.Client.Smembers(database.QUEUED_PAGES)
+                amountQueuedPages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.QUEUED_PAGES))
 
-        //         So(len(amountQueuedPages), ShouldEqual, 2)
+                So(len(amountQueuedPages), ShouldEqual, 2)
 
-        //         Convey("should get a random page from the queued pages and remove it from the database", func() {
-        //             randomPage := Db.RandomPageFromQueue()
+                Convey("should get a random page from the queued pages and remove it from the database", func() {
+                    randomPage := Db.RandomPageFromQueue()
 
-        //             So(randomPage, ShouldBeIn, pagesToQueue)
+                    So(randomPage, ShouldBeIn, pagesToQueue)
 
-        //             // refresh local variable
-        //             amountQueuedPages, _ := Db.Client.Smembers(database.QUEUED_PAGES)
+                    // refresh local variable
+                    amountQueuedPages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.QUEUED_PAGES))
 
-        //             So(len(amountQueuedPages), ShouldEqual, 1)
+                    So(len(amountQueuedPages), ShouldEqual, 1)
 
-        //             amountDonePages, _ := Db.Client.Smembers(database.DONE_PAGES)
-        //             So(len(amountDonePages), ShouldEqual, 1)
-        //         })
-        //     })
-        // })
+                    // amountDonePages, _ := Db.Client.Smembers(database.DONE_PAGES)
+                    amountDonePages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.DONE_PAGES))
+                    So(len(amountDonePages), ShouldEqual, 1)
+                })
+            })
+        })
 
         // Convey("should add a new relation to a word with a counter and receive it", func() {
 
