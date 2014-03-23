@@ -75,36 +75,37 @@ func TestRedis(t *testing.T) {
             })
         })
 
-        // Convey("should add a new relation to a word with a counter and receive it", func() {
+        Convey("should add a new relation to a word with a counter and receive it", func() {
 
-        //     word := "bacon"
-        //     relations := []string{"cheese" ,"ham" ,"gorgonzola" ,"salami" ,"ham" ,"ham"}
+            word := "bacon"
+            relations := []string{"cheese" ,"ham" ,"gorgonzola" ,"salami" ,"ham" ,"ham"}
 
-        //     Convey("should add all relation", func() {
-        //         // loop trough all relations
-        //         for _, relation := range relations {
-        //             Db.AddWordRelation(word, relation)
-        //         }
-        //     })
+            Convey("should add all relation", func() {
+                // loop trough all relations
+                for _, relation := range relations {
+                    Db.AddWordRelation(word, relation)
+                }
+            })
 
-        //     Convey("should have added a coutner for ham", func() {
-        //         hamCounterByte, _ := Db.Client.Get("bacon:ham")
-        //         hamCounter := string(hamCounterByte[:]) // @TODO use proper type -> not string but int conversion
-        //         So(hamCounter, ShouldEqual, "3")
-        //     })
+            Convey("should have added a coutner for ham", func() {
+                // hamCounterByte, _ := Db.Client.Get("bacon:ham")
+                hamCounter, _ := redis.Int(Db.Client.Do("GET", "bacon:ham"))
 
-        //     Convey("should have added a coutner for salami", func() {
-        //         hamCounterByte, _ := Db.Client.Get("bacon:salami")
-        //         hamCounter := string(hamCounterByte[:]) // @TODO use proper type -> not string but int conversion
-        //         So(hamCounter, ShouldEqual, "1")
-        //     })
+                So(hamCounter, ShouldEqual, 3)
+            })
 
-        //     Convey("should receive all distinct existing relation", func() {
-        //         amountRelations := Db.GetPopularWordRelations(word)
-        //         So(len(amountRelations), ShouldEqual, 4)
-        //     })
+            // Convey("should have added a coutner for salami", func() {
+            //     hamCounterByte, _ := Db.Client.Get("bacon:salami")
+            //     hamCounter := string(hamCounterByte[:]) // @TODO use proper type -> not string but int conversion
+            //     So(hamCounter, ShouldEqual, "1")
+            // })
 
-        // })
+            // Convey("should receive all distinct existing relation", func() {
+            //     amountRelations := Db.GetPopularWordRelations(word)
+            //     So(len(amountRelations), ShouldEqual, 4)
+            // })
+
+        })
 
     })
 

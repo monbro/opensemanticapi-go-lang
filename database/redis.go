@@ -104,23 +104,27 @@ func (db *Database) RandomPageFromQueue() string {
     return pageName
 }
 
-// func (db *Database) AddWordRelation(word string, relation string) {
-//     // @TODO implement
-//     // - if relations exists already putt the counter higher
-//     log.Printf("Added new relation '%+v'", relation)
-//     log.Printf("to word '%+v'", word)
+func (db *Database) AddWordRelation(word string, relation string) {
+    // @TODO implement
+    // - if relations exists already putt the counter higher
+    log.Printf("Added new relation '%+v'", relation)
+    log.Printf("to word '%+v'", word)
 
-//     input := []byte(relation)
-//     _, e := db.Client.Sadd(word, input)
+    // _, e := db.Client.Sadd(word, input)
 
-//     if e != nil {
-//         log.Println("failed to add relations for this one", e)
-//         // panic("No Url provided!")
-//     }
+    // if e != nil {
+    //     log.Println("failed to add relations for this one", e)
+    //     // panic("No Url provided!")
+    // }
 
-//     // increase counter for relation by one
-//     db.Client.Incrby(word+":"+relation, 1);
-// }
+    // increase counter for relation by one
+    // db.Client.Incrby(word+":"+relation, 1);
+    _, e := db.Client.Do("INCR", word+":"+relation)
+
+    if e != nil {
+        log.Println("failed to create the client", e)
+    }
+}
 
 // func (db *Database) GetPopularWordRelationsOld(word string) []string {
 //     // @TODO implement
