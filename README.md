@@ -5,7 +5,7 @@ opensemanticapi
 
 **Works with GO LANG**
 
-**This is a branch is unstable and experimental, but includes a working prototype**
+**This branch is unstable and experimental, but includes a working prototype**
 
 **Description**
 
