@@ -16,5 +16,11 @@ func main() {
     worker := new(analyse.Worker)
     worker.START_SEARCH_TERM = START_SEARCH_TERM
     worker.SNIPPET_LENGTH = SNIPPET_LENGTH
+
+    /**
+     * comment the following line in if you want to loop for more results
+     */
+    // worker.InfiniteWorking = true
+
     worker.Run()
 }

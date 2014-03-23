@@ -18,12 +18,22 @@ type Worker struct {
     Db *database.Database
     START_SEARCH_TERM string
     SNIPPET_LENGTH int
+    InfiniteWorking bool
 }
 
 /**
  * will initially start the process
  */
 func (w *Worker) Run() {
+
+    if w.InfiniteWorking != true {
+        w.InfiniteWorking = false
+    }
+
+    // init database
+    w.Db = new(database.Database)
+    w.Db.Init("", 10)
+
     // initial start
     w.RunNext(w.START_SEARCH_TERM)
 }
@@ -38,20 +48,18 @@ func (w *Worker) RunNext(searchTerm string) {
     // declare needed variables
     var pages []string
 
-    // w.Db = new(database.Database)
-    // w.Db.Init("", 13)
-
     // initial search request to get some pages back
     pages = SearchWikipedia(searchTerm)
     searchTerm = pages[0]
 
+    // add this page to the done collection
+    w.Db.AddPageToDone(searchTerm)
+
     // get a slice which will exclude the first element as we processing this one soon
     pagesToQueue := pages[1:]
-    // w.Db.AddPagesToQueue(pagesToQueue)
 
-    for i := range pagesToQueue {
-        log.Printf("Paged to quque: %+v", pagesToQueue[i])
-    }
+    // pagesToQueue = []string{"pageOne", "Geographic Names Information System"}
+    w.Db.AddPagesToQueue(pagesToQueue)
 
     rawContent := GetWikipediaPage(pages[0])
 
@@ -66,12 +74,14 @@ func (w *Worker) RunNext(searchTerm string) {
             log.Printf("Snippet cleaned: %+v", len(snippets[i]))
             log.Printf("==========================================================================================")
 
-            // w.CreateSnippetWordsReplations(snippets[i])
+            w.CreateSnippetWordsReplations(snippets[i])
         }
     }
 
-    // create aloop by calling it self for the next search term
-    // w.RunNext(w.Db.RandomPageFromQueue())
+    if w.InfiniteWorking {
+        // create aloop by calling it self for the next search term
+        w.RunNext(w.Db.RandomPageFromQueue())
+    }
 }
 
 /**
@@ -133,12 +143,13 @@ func GetWikipediaPage(firstPage string) string {
 func (w *Worker) CreateSnippetWordsReplations(snippet string) {
     words := GetWordsFromSnippet(snippet)
     for _, word := range words {
-        if len(word) > 3 &&
-            word != " " {
+        // check if word has more than 3 letters and this includes checking for an empty string
+        if len(word) > 3 {
             for _, relation := range words {
+                // check if we not adding a relation to the word itself
+                // check if the relation is more than 3 letters long and not an empty string
                 if word != relation &&
-                    len(relation) > 3 &&
-                    relation != " " {
+                    len(relation) > 3 {
                     w.Db.AddWordRelation(word, relation)
                 }
             }
@@ -165,12 +176,12 @@ func OpenSearchWikipedia(searchTerm string) []string {
     wikiOpenSearch := new(requestStruct.WikiOpenSearch)
 
     // first step is to assign the result term which is the first item in the returned array
-    if err := json.Unmarshal(rb.ResponseObjectRawJson[0], &wikiOpenSearch.SearchTerm); err != nil {
+    if err := json.Unmarshal(rb.ResponseArrayRawJson[0], &wikiOpenSearch.SearchTerm); err != nil {
         log.Fatalln("expect string:", err)
     }
 
     // second step is to assign the second item into the 'Results' array
-    if err := json.Unmarshal(rb.ResponseObjectRawJson[1], &wikiOpenSearch.Results); err != nil {
+    if err := json.Unmarshal(rb.ResponseArrayRawJson[1], &wikiOpenSearch.Results); err != nil {
         log.Fatalln("expect []string:", err)
     }
 

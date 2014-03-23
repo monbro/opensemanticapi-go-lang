@@ -48,25 +48,33 @@ func (db *Database) Flushall() {
 }
 
 func (db *Database) AddPageToQueue(pageName string) {
-
     // only add page if it is not done
-    wasProcessed, e2 := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
-    if e2 != nil {
-        log.Println("failed to create the client", e2)
-        return
+    wasProcessed, e := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
+    if e != nil {
+        log.Println("failed to create the client", e)
     }
 
     if !wasProcessed {
-        _, e2 := db.Client.Do("SADD", QUEUED_PAGES, pageName)
+        _, e := db.Client.Do("SADD", QUEUED_PAGES, pageName)
 
-        if e2 != nil {
-            log.Println("failed to create the client", e2)
+        if e != nil {
+            log.Println("failed to create the client", e)
             return
         }
         log.Printf("Added page to queue: '%+v'", pageName)
     } else {
         log.Println("Page is already member in queued pages: ", pageName)
     }
+}
+
+func (db *Database) AddPageToDone(pageName string) {
+    _, e := db.Client.Do("SADD", DONE_PAGES, pageName)
+
+    if e != nil {
+        log.Println("failed to create the client", e)
+        return
+    }
+    log.Printf("Added page to done: '%+v'", pageName)
 }
 
 func (db *Database) AddPagesToQueue(pagesToQueue []string) {
@@ -100,8 +108,8 @@ func (db *Database) RandomPageFromQueue() string {
 }
 
 func (db *Database) AddWordRelation(word string, relation string) {
-    log.Printf("Added new relation '%+v'", relation)
-    log.Printf("to word '%+v'", word)
+    // log.Printf("Added new relation '%+v'", relation)
+    // log.Printf("to word '%+v'", word)
 
     _, e := db.Client.Do("SADD", word, relation)
 

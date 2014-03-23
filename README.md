@@ -55,6 +55,8 @@ The following examples where given after the system was collecting for about one
 **How to run the main program**
 
 * ```go run src/github.com/monbro/opensemanticapi/main.go``` to run the test script
+if you are in the terminal of the redis-cli you can check the result with ```select 10``` to be in the correct datbase
+and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get a example
 
 **Testing**
 

@@ -45,7 +45,7 @@ func TestRedis(t *testing.T) {
 
         Convey("should handle queued pages proper", func() {
 
-            pagesToQueue := []string{"pageOne","pageTwo"}
+            pagesToQueue := []string{"pageOne", "Geographic Names Information System"}
 
             Convey("should add pages to the queue by a function call", func() {
 
