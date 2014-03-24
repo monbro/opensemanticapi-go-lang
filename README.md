@@ -1,7 +1,7 @@
 opensemanticapi with go lang
 ============================
 
-[![Build Status](https://travis-ci.org/monbro/opensemanticapi.png?branch=go-lang)](https://travis-ci.org/monbro/opensemanticapi)
+[![Build Status](https://travis-ci.org/monbro/opensemanticapi-go-lang.png)](https://travis-ci.org/monbro/opensemanticapi-go-lang)
 
 **Works with GO LANG**
 
@@ -11,7 +11,7 @@ opensemanticapi with go lang
 
 Will allow you to create your own semantic wording database with redis. Otherwise there will be a open api to get related words by meaning. You could say, this implementation is a light version of the idea behind http://en.wikipedia.org/wiki/Latent_semantic_analysis in combination with http://en.wikipedia.org/wiki/Open-source_intelligence
 
-![ScreenShot](https://raw.githubusercontent.com/monbro/opensemanticapi/go-lang/osapi_explanation.jpg)
+![ScreenShot](https://raw.githubusercontent.com/monbro/opensemanticapi-go-lang/master/osapi_explanation.jpg)
 
 **Concerns**
 
