@@ -1,11 +1,15 @@
 opensemanticapi with go lang
 ============================
 
+This project exists in two different languages:
+* [go lang](https://github.com/monbro/opensemanticapi-go-lang)
+* [NodeJS](https://github.com/monbro/opensemanticapi)
+
+===========================
+
 [![Build Status](https://travis-ci.org/monbro/opensemanticapi-go-lang.png)](https://travis-ci.org/monbro/opensemanticapi-go-lang)
 
-**Works with GO LANG**
-
-**This branch is unstable and experimental, but includes a working prototype**
+**Works with go lang and Redis**
 
 **Description**
 
@@ -47,7 +51,7 @@ The following examples where given after the system was collecting for about one
 * start your redis server with ```redis-server``` on a new console tab
 * clone this repo ```git clone https://github.com/monbro/opensemanticapi.git```
 * ```export GOPATH=/your/go/workspace/folder/```
-* ```cd $GOPATH``
+* ```cd $GOPATH```
 * ```go get -d -v ./... && go build -v ./...``` to install all go dependencies - go will lookup on all import path's and grab the needed repos itself - pretty awesome
 
 **How to run the cronjob / scraper**
