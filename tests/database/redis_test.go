@@ -3,7 +3,7 @@ package tests
 import(
     "testing"
     . "github.com/smartystreets/goconvey/convey"
-    "github.com/monbro/opensemanticapi/database"
+    "github.com/monbro/opensemanticapi-go-lang/database"
     "github.com/garyburd/redigo/redis"
     "time"
     "log"

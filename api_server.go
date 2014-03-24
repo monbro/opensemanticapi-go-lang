@@ -6,10 +6,10 @@ package main
  */
 
 import (
-    // "github.com/monbro/opensemanticapi/api" // @TODO put the logic into this file
+    // "github.com/monbro/opensemanticapi-go-lang/api" // @TODO put the logic into this file
     "log"
     "github.com/codegangsta/martini"
-     "github.com/monbro/opensemanticapi/database"
+     "github.com/monbro/opensemanticapi-go-lang/database"
      "strings"
 )
 

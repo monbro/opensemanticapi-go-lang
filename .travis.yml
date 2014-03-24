@@ -6,7 +6,7 @@ go:
 
 branches:
   only:
-    - go-lang
+    - master
 
 # http://docs.travis-ci.com/user/languages/go/#Dependency-Management
 install:

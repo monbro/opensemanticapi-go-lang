@@ -1,7 +1,7 @@
 package main
 
 import (
-    "github.com/monbro/opensemanticapi/analyse"
+    "github.com/monbro/opensemanticapi-go-lang/analyse"
 )
 
 /**

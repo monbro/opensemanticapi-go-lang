@@ -1,5 +1,5 @@
-opensemanticapi
-===============
+opensemanticapi with go lang
+============================
 
 [![Build Status](https://travis-ci.org/monbro/opensemanticapi.png?branch=go-lang)](https://travis-ci.org/monbro/opensemanticapi)
 
@@ -52,13 +52,13 @@ The following examples where given after the system was collecting for about one
 
 **How to run the cronjob / scraper**
 
-* ```go run src/github.com/monbro/opensemanticapi/cronjob.go``` to run the test script
+* ```go run src/github.com/monbro/opensemanticapi-go-lang/cronjob.go``` to run the test script
 if you are in the terminal of the redis-cli you can check the result with ```select 10``` to be in the correct datbase
 and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get a example
 
 **How to run the REST API**
 
-* ```go run src/github.com/monbro/opensemanticapi/api_server.go``` to launch the REST API server script
+* ```go run src/github.com/monbro/opensemanticapi-go-lang/api_server.go``` to launch the REST API server script
 * shoule be now accessible via ```http://localhost:3000/relation/database``` after the cronjob was running once
 
 **Testing**
@@ -72,16 +72,16 @@ and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get
 
 **How to run all test's manually**
 
-* ```go test github.com/monbro/opensemanticapi/tests/scraper```
-* ```go test github.com/monbro/opensemanticapi/tests/database```
-* ```go test github.com/monbro/opensemanticapi/tests/analyse``` // @TODO write tests
-* ```go test github.com/monbro/opensemanticapi/tests/api``` // @TODO write tests
-* ```go test github.com/monbro/opensemanticapi/tests/requestStruct```
+* ```go test github.com/monbro/opensemanticapi-go-lang/tests/scraper```
+* ```go test github.com/monbro/opensemanticapi-go-lang/tests/database```
+* ```go test github.com/monbro/opensemanticapi-go-lang/tests/analyse``` // @TODO write tests
+* ```go test github.com/monbro/opensemanticapi-go-lang/tests/api``` // @TODO write tests
+* ```go test github.com/monbro/opensemanticapi-go-lang/tests/requestStruct```
 
 **How to run the goconvey test's server**
 
 * ensure that you installed goconvey proper ```https://github.com/smartystreets/goconvey#installation```
-* switch into the folder where you want to watch the tests, e.g. 'cd src/github.com/monbro/opensemanticapi/'
+* switch into the folder where you want to watch the tests, e.g. 'cd src/github.com/monbro/opensemanticapi-go-lang/'
 * run the test server```$GOPATH/bin/goconvey```
 * access the webinterface on http://localhost:8080
 

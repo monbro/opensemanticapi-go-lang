@@ -8,9 +8,9 @@ import (
     "log"
     "net/url"
     "encoding/json"
-    "github.com/monbro/opensemanticapi/scraper"
-    "github.com/monbro/opensemanticapi/requestStruct"
-    "github.com/monbro/opensemanticapi/database"
+    "github.com/monbro/opensemanticapi-go-lang/scraper"
+    "github.com/monbro/opensemanticapi-go-lang/requestStruct"
+    "github.com/monbro/opensemanticapi-go-lang/database"
 )
 
 type Worker struct {

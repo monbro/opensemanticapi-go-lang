@@ -3,7 +3,7 @@ package tests
 import(
     "testing"
     . "github.com/smartystreets/goconvey/convey"
-    "github.com/monbro/opensemanticapi/requestStruct"
+    "github.com/monbro/opensemanticapi-go-lang/requestStruct"
     "encoding/json"
     "log"
 )
