@@ -7,9 +7,11 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 ![ScreenShot](https://raw.githubusercontent.com/monbro/opensemanticapi-go-lang/master/osapi_explanation.jpg)
 
-* [Concerns](/doc/concerns)
+* [Concerns](concerns)
 
-* [Concerns](doc/concerns)
+* [Concerns](Concerns)
+
+* [Concerns](/concerns)
 
 * Read the :doc:`Concerns </doc/concerns>`.
 
