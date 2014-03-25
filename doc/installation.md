@@ -1,4 +1,4 @@
-**Installation Guide**
+**Installation**
 
 * install go language (```brew install go``` on a mac or ```http://golang.org/doc/install``` or via gvm ```bash < <(curl -s https://raw.github.com/moovweb/gvm/master/binscripts/gvm-installer)```)
 * install your redis server (http://redis.io/topics/quickstart) on a disk with several free GB

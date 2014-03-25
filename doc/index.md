@@ -1,4 +1,5 @@
-documentation for opensemanticapi with go lang
+documentation for
+opensemanticapi with go lang
 ==============================================
 
 **Description**
@@ -9,15 +10,15 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 * [Concerns](/doc/concerns.md)
 
-* [Concerns](/doc/examples.md)
+* [Examples](/doc/examples.md)
 
-* [Concerns](/doc/installation_guide.md)
+* [Installation](/doc/installation.md)
 
-* [Concerns](/doc/usage_guide.md)
+* [Usage](/doc/usage_guide.md)
 
-* [Concerns](/doc/testing.md)
+* [Testing](/doc/testing.md)
 
-* [Concerns](/doc/references.md)
+* [References / Notes](/doc/references.md)
 
 **Licence**
 

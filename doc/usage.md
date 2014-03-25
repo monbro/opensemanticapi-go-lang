@@ -1,4 +1,4 @@
-**Usage Guide**
+**Usage**
 
 **How to run the cronjob / scraper**
 
