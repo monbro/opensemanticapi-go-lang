@@ -16,7 +16,7 @@ documentation
 
 * [Installation](/doc/installation.md)
 
-* [Usage](/doc/usage_guide.md)
+* [Usage](/doc/usage.md)
 
 * [Testing](/doc/testing.md)
 
