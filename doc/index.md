@@ -17,7 +17,9 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 * [Concerns](doc/concerns.md)
 
-[[Concerns|/doc/Concerns]]
+* [Concerns](/doc/concerns.md)
+
+* [Concerns](/doc/concerns)
 
 * Read the :doc:`Concerns </doc/concerns>`.
 
