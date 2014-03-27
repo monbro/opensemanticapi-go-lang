@@ -14,6 +14,8 @@ import (
 const (
     QUEUED_PAGES = "queued_page_title"
     DONE_PAGES = "done_page_title"
+    MOST_POPULAR_WORDS = "most_popular_words"
+    SCRAPED_PAGES_COUNTER = "scraped_pages_counter"
 )
 
 type Database struct {
@@ -108,9 +110,49 @@ func (db *Database) RandomPageFromQueue() string {
 }
 
 func (db *Database) AddWordRelation(word string, relation string) {
-    // log.Printf("Added new relation '%+v'", relation)
-    // log.Printf("to word '%+v'", word)
+    // first we do want to add the relation to the current word
+    db.createWordRelation(word, relation);
 
+    // second we want to overall count the density of every word
+    db.createWordRelation(MOST_POPULAR_WORDS, relation);
+}
+
+/**
+ * api database functions
+ */
+
+func (db *Database) GetPopularWordRelations(word string) []string {
+    allRelations, err := redis.Strings(db.Client.Do("SORT", word,
+        "BY", word+":*",
+        "Limit", 0, 120,
+        "DESC",
+        "GET", "#"))
+    if err != nil {
+        panic(err)
+    }
+
+    return allRelations
+}
+
+func (db *Database) GetMostPopularWords() []string {
+    allRelations, err := redis.Strings(db.Client.Do("SORT", MOST_POPULAR_WORDS,
+        "BY", MOST_POPULAR_WORDS+":*",
+        "Limit", 0, 120,
+        "DESC",
+        "GET", "#"))
+    if err != nil {
+        panic(err)
+    }
+
+    return allRelations
+}
+
+/**
+ * helper functions
+ */
+
+func (db *Database) createWordRelation(word string, relation string) {
+    // add the actual maybe related word in the db
     _, e := db.Client.Do("SADD", word, relation)
 
     if e != nil {
@@ -125,17 +167,17 @@ func (db *Database) AddWordRelation(word string, relation string) {
     }
 }
 
-func (db *Database) GetPopularWordRelations(word string) []string {
-    allRelations, err := redis.Strings(db.Client.Do("SORT", word,
-        "BY", word+":*",
-        "Limit", 0, 120,
-        "DESC",
-        "GET", "#"))
-    if err != nil {
-        panic(err)
-    }
+/**
+ * functions for statistics
+ */
 
-    return allRelations
+func (db *Database) RaiseScrapedPagesCounter() {
+    // increase counter for relation by one
+    _, e = db.Client.Do("INCR", SCRAPED_PAGES_COUNTER)
+
+    if e != nil {
+        log.Println("failed to create the client", e)
+    }
 }
 
 // keeping for memories or what?? :-)

@@ -28,9 +28,15 @@ func main() {
         return `{"result":"Hello world!"}`
     })
 
-    // http://localhost:3000/relation/database
+    // eg: http://localhost:3000/relation/database
     m.Get("/relation/:word", func(params martini.Params) string {
         relations := Db.GetPopularWordRelations(params["word"])
+        return `{"result": ["`+strings.Join(relations, `", "`)+`"]}`
+    })
+
+    // eg: http://localhost:3000/popular-relations/
+    m.Get("/popular-relations/", func(params martini.Params) string {
+        relations := Db.GetMostPopularWords()
         return `{"result": ["`+strings.Join(relations, `", "`)+`"]}`
     })
 
