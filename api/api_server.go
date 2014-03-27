@@ -40,6 +40,12 @@ func StartServer() {
         return `{"result": ["`+strings.Join(relations, `", "`)+`"]}`
     })
 
+    // eg: http://localhost:3000/info/
+    m.Get("/info/", func() string {
+        info := Db.GetAnalysedTextBlocksCounter()
+        return `{"result": {"analysedTextBlocks": "`+info+`"}}`
+    })
+
     // actual launch the server
     m.Run()
 }

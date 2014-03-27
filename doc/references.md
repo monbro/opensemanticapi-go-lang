@@ -9,3 +9,4 @@
 * https://code.google.com/p/go-wiki/wiki/GithubCodeLayout
 * http://golang.org/doc/code.html
 * http://godoc.org/?q=markdown // good to search anything go related
+* https://en.wikipedia.org/wiki/Machine_learning#Machine_learning_and_data_mining

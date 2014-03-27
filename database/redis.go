@@ -11,13 +11,6 @@ import (
     "log"
 )
 
-const (
-    QUEUED_PAGES = "queued_page_title"
-    DONE_PAGES = "done_page_title"
-    MOST_POPULAR_WORDS = "most_popular_words"
-    SCRAPED_PAGES_COUNTER = "scraped_pages_counter"
-)
-
 type Database struct {
     Client redis.Conn
 }
@@ -129,6 +122,10 @@ func (db *Database) GetMostPopularWords() []string {
     return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS);
 }
 
+func (db *Database) GetAnalysedTextBlocksCounter() string {
+    return db.getValueFromKey(TEXTBLOCKS_COUNTER);
+}
+
 /**
  * private helper functions
  */
@@ -162,13 +159,22 @@ func (db *Database) getPopularRelationsByDensity(word string) []string {
     return allRelations
 }
 
+func (db *Database) getValueFromKey(key string) string {
+    value, e := redis.String(db.Client.Do("GET", key))
+    if e != nil {
+        return "0" // @TODO thats not a proper solution, refactor this one
+    }
+
+    return value
+}
+
 /**
  * functions for statistics
  */
 
-func (db *Database) RaiseScrapedPagesCounter() {
+func (db *Database) RaiseScrapedTextBlocksCounter() {
     // increase counter for relation by one
-    _, e := db.Client.Do("INCR", SCRAPED_PAGES_COUNTER)
+    _, e := db.Client.Do("INCR", TEXTBLOCKS_COUNTER)
 
     if e != nil {
         log.Println("failed to create the client", e)

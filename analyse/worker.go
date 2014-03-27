@@ -15,7 +15,7 @@ import (
 
 type Worker struct {
     Debug bool
-    Db *database.Database
+    Db *database.RedisMulti
     START_SEARCH_TERM string
     SNIPPET_LENGTH int
     InfiniteWorking bool
@@ -31,7 +31,7 @@ func (w *Worker) Run() {
     }
 
     // init database
-    w.Db = new(database.Database)
+    w.Db = new(database.RedisMulti)
     w.Db.Init("", 10)
 
     // initial start
@@ -74,7 +74,12 @@ func (w *Worker) RunNext(searchTerm string) {
             log.Printf("Snippet cleaned: %+v", len(snippets[i]))
             log.Printf("==========================================================================================")
 
+            // analyse the text block
             w.CreateSnippetWordsReplations(snippets[i])
+
+            // raise counter for text blocks
+            w.Db.RaiseScrapedTextBlocksCounter()
+            w.Db.Flush() // flush the queued commands from the pipeline
         }
     }
 
@@ -143,13 +148,13 @@ func GetWikipediaPage(firstPage string) string {
 func (w *Worker) CreateSnippetWordsReplations(snippet string) {
     words := GetWordsFromSnippet(snippet)
     for _, word := range words {
-        // check if word has more than 3 letters and this includes checking for an empty string
-        if len(word) > 3 {
+        // check if word has more than 2 letters and this includes checking for an empty string
+        if len(word) > 2 {
             for _, relation := range words {
                 // check if we not adding a relation to the word itself
-                // check if the relation is more than 3 letters long and not an empty string
+                // check if the relation is more than 2 letters long and not an empty string
                 if word != relation &&
-                    len(relation) > 3 {
+                    len(relation) > 2 {
                     w.Db.AddWordRelation(word, relation)
                 }
             }

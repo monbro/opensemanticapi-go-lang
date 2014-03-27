@@ -16,9 +16,23 @@ func TestRedis(t *testing.T) {
     dbPort := 13
 
     // establish a connection with the database
-    Db := new(database.Database)
+    Db := new(database.RedisMulti)
     Db.Init(pwd, dbPort)
     defer Db.Close();
+
+    testRunner(t, Db)
+}
+
+func testRunner(t *testing.T, Db *database.RedisMulti) {
+    // we do need to type switch as we do not know which database adapter do we got
+    // switch v := DbInput.(type) {
+    //     case database.Database:
+    //         Db := *DbInput.(*database.Database)
+    //     case database.RedisMulti:
+    //         Db := *DbInput.(*database.RedisMulti)
+    //     default:
+    //         log.Println("unknown")
+    // }
 
     // flush database before tests
     Db.Flushall()
@@ -105,5 +119,4 @@ func TestRedis(t *testing.T) {
         })
 
     })
-
 }
