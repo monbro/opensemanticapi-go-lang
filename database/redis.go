@@ -122,33 +122,15 @@ func (db *Database) AddWordRelation(word string, relation string) {
  */
 
 func (db *Database) GetPopularWordRelations(word string) []string {
-    allRelations, err := redis.Strings(db.Client.Do("SORT", word,
-        "BY", word+":*",
-        "Limit", 0, 120,
-        "DESC",
-        "GET", "#"))
-    if err != nil {
-        panic(err)
-    }
-
-    return allRelations
+    return db.getPopularRelationsByDensity(word);
 }
 
 func (db *Database) GetMostPopularWords() []string {
-    allRelations, err := redis.Strings(db.Client.Do("SORT", MOST_POPULAR_WORDS,
-        "BY", MOST_POPULAR_WORDS+":*",
-        "Limit", 0, 120,
-        "DESC",
-        "GET", "#"))
-    if err != nil {
-        panic(err)
-    }
-
-    return allRelations
+    return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS);
 }
 
 /**
- * helper functions
+ * private helper functions
  */
 
 func (db *Database) createWordRelation(word string, relation string) {
@@ -167,13 +149,26 @@ func (db *Database) createWordRelation(word string, relation string) {
     }
 }
 
+func (db *Database) getPopularRelationsByDensity(word string) []string {
+    allRelations, err := redis.Strings(db.Client.Do("SORT", word,
+        "BY", word+":*",
+        "Limit", 0, 120,
+        "DESC",
+        "GET", "#"))
+    if err != nil {
+        panic(err)
+    }
+
+    return allRelations
+}
+
 /**
  * functions for statistics
  */
 
 func (db *Database) RaiseScrapedPagesCounter() {
     // increase counter for relation by one
-    _, e = db.Client.Do("INCR", SCRAPED_PAGES_COUNTER)
+    _, e := db.Client.Do("INCR", SCRAPED_PAGES_COUNTER)
 
     if e != nil {
         log.Println("failed to create the client", e)
