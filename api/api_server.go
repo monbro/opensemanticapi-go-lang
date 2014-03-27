@@ -1,4 +1,4 @@
-package main
+package api
 
 /**
  * @TODO do the json encoding the proper way
@@ -13,7 +13,7 @@ import (
      "strings"
 )
 
-func main() {
+func StartServer() {
     log.Println("Starting API server now.")
 
     // configurate the database connection
