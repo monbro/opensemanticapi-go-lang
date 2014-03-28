@@ -79,11 +79,15 @@ func (w *Worker) RunNext(searchTerm string) {
 
             // raise counter for text blocks
             w.Db.RaiseScrapedTextBlocksCounter()
-            w.Db.Flush() // flush the queued commands from the pipeline
         }
     }
 
+    // flush the queued commands from the pipeline
+    w.Db.Flush()
+
     if w.InfiniteWorking {
+
+
         // create aloop by calling it self for the next search term
         w.RunNext(w.Db.RandomPageFromQueue())
     }
