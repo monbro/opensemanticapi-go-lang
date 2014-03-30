@@ -2,19 +2,19 @@
 
 The following examples where given after the system was collecting for about one hour only.
 
-**1. Example (http://localhost:8080/relations/ship):**
+**1. Example (http://localhost:3000/relation/ship):**
 
 * Input: "ship"
 
 * Output: ["midshipmen", "aboard", "ships", "rating", "master", "served", "seaman", "sea", "officers", "santa", "sailing", "cadets", "able", "sail", "navigation", "lieutenant", "hms", "expected", "yahoo", "storm", "rated", "promotion", "maría", "lewis", "false", "era", "boys", "wind", "voyage", "volunteer", "servants", "required", "passing", "palos"]
 
-**2. Example (http://localhost:8080/relations/human):**
+**2. Example (http://localhost:3000/relation/human):**
 
 * Input: "human"
 
 * Output: ["humans", "evolution", "primates", "ago", "ado", "studies", "physiology", "bonobo"]
 
-**3. Example (http://localhost:8080/relations/dog):**
+**3. Example (http://localhost:3000/relation/dog):**
 
 * Input: "dog"
 

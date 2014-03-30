@@ -9,7 +9,7 @@ import(
     "log"
 )
 
-func TestRedis(t *testing.T) {
+func TestRedisMulti(t *testing.T) {
 
     // test database configuration
     pwd := ""
@@ -20,19 +20,10 @@ func TestRedis(t *testing.T) {
     Db.Init(pwd, dbPort)
     defer Db.Close();
 
-    testRunner(t, Db)
+    testRunnerRedisMulti(t, Db)
 }
 
-func testRunner(t *testing.T, Db *database.RedisMulti) {
-    // we do need to type switch as we do not know which database adapter do we got
-    // switch v := DbInput.(type) {
-    //     case database.Database:
-    //         Db := *DbInput.(*database.Database)
-    //     case database.RedisMulti:
-    //         Db := *DbInput.(*database.RedisMulti)
-    //     default:
-    //         log.Println("unknown")
-    // }
+func testRunnerRedisMulti(t *testing.T, Db *database.RedisMulti) {
 
     // flush database before tests
     Db.Flushall()

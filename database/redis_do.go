@@ -11,11 +11,11 @@ import (
     "log"
 )
 
-type Database struct {
+type RedisDo struct {
     Client redis.Conn
 }
 
-func (db *Database) Init(Password string, DbNum int) {
+func (db *RedisDo) Init(Password string, DbNum int) {
     var err error
     db.Client, err = redis.Dial("tcp", ":6379")
     if err != nil {
@@ -30,11 +30,11 @@ func (db *Database) Init(Password string, DbNum int) {
     }
 }
 
-func (db *Database) Close() {
+func (db *RedisDo) Close() {
     db.Client.Close()
 }
 
-func (db *Database) Flushall() {
+func (db *RedisDo) Flushall() {
     var err error
     _, err = db.Client.Do("FLUSHALL")
     if err != nil {
@@ -42,7 +42,7 @@ func (db *Database) Flushall() {
     }
 }
 
-func (db *Database) AddPageToQueue(pageName string) {
+func (db *RedisDo) AddPageToQueue(pageName string) {
     // only add page if it is not done
     wasProcessed, e := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
     if e != nil {
@@ -62,7 +62,7 @@ func (db *Database) AddPageToQueue(pageName string) {
     }
 }
 
-func (db *Database) AddPageToDone(pageName string) {
+func (db *RedisDo) AddPageToDone(pageName string) {
     _, e := db.Client.Do("SADD", DONE_PAGES, pageName)
 
     if e != nil {
@@ -72,13 +72,13 @@ func (db *Database) AddPageToDone(pageName string) {
     log.Printf("Added page to done: '%+v'", pageName)
 }
 
-func (db *Database) AddPagesToQueue(pagesToQueue []string) {
+func (db *RedisDo) AddPagesToQueue(pagesToQueue []string) {
     for i := range pagesToQueue {
         db.AddPageToQueue(pagesToQueue[i])
     }
 }
 
-func (db *Database) RandomPageFromQueue() string {
+func (db *RedisDo) RandomPageFromQueue() string {
     pageName, e := redis.String(db.Client.Do("SRANDMEMBER", QUEUED_PAGES))
 
     if e != nil {
@@ -102,7 +102,7 @@ func (db *Database) RandomPageFromQueue() string {
     return pageName
 }
 
-func (db *Database) AddWordRelation(word string, relation string) {
+func (db *RedisDo) AddWordRelation(word string, relation string) {
     // first we do want to add the relation to the current word
     db.createWordRelation(word, relation);
 
@@ -111,18 +111,18 @@ func (db *Database) AddWordRelation(word string, relation string) {
 }
 
 /**
- * api database functions
+ * api RedisDo functions
  */
 
-func (db *Database) GetPopularWordRelations(word string) []string {
+func (db *RedisDo) GetPopularWordRelations(word string) []string {
     return db.getPopularRelationsByDensity(word);
 }
 
-func (db *Database) GetMostPopularWords() []string {
+func (db *RedisDo) GetMostPopularWords() []string {
     return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS);
 }
 
-func (db *Database) GetAnalysedTextBlocksCounter() string {
+func (db *RedisDo) GetAnalysedTextBlocksCounter() string {
     return db.getValueFromKey(TEXTBLOCKS_COUNTER);
 }
 
@@ -130,7 +130,7 @@ func (db *Database) GetAnalysedTextBlocksCounter() string {
  * private helper functions
  */
 
-func (db *Database) createWordRelation(word string, relation string) {
+func (db *RedisDo) createWordRelation(word string, relation string) {
     // add the actual maybe related word in the db
     _, e := db.Client.Do("SADD", word, relation)
 
@@ -146,7 +146,7 @@ func (db *Database) createWordRelation(word string, relation string) {
     }
 }
 
-func (db *Database) getPopularRelationsByDensity(word string) []string {
+func (db *RedisDo) getPopularRelationsByDensity(word string) []string {
     allRelations, err := redis.Strings(db.Client.Do("SORT", word,
         "BY", word+":*",
         "Limit", 0, 120,
@@ -159,7 +159,7 @@ func (db *Database) getPopularRelationsByDensity(word string) []string {
     return allRelations
 }
 
-func (db *Database) getValueFromKey(key string) string {
+func (db *RedisDo) getValueFromKey(key string) string {
     value, e := redis.String(db.Client.Do("GET", key))
     if e != nil {
         return "0" // @TODO thats not a proper solution, refactor this one
@@ -172,7 +172,7 @@ func (db *Database) getValueFromKey(key string) string {
  * functions for statistics
  */
 
-func (db *Database) RaiseScrapedTextBlocksCounter() {
+func (db *RedisDo) RaiseScrapedTextBlocksCounter() {
     // increase counter for relation by one
     _, e := db.Client.Do("INCR", TEXTBLOCKS_COUNTER)
 
@@ -182,7 +182,7 @@ func (db *Database) RaiseScrapedTextBlocksCounter() {
 }
 
 // keeping for memories or what?? :-)
-// func (db *Database) GetPopularWordRelationsOld(word string) []string {
+// func (db *RedisDo) GetPopularWordRelationsOld(word string) []string {
 //     // @TODO implement
 //     // - return a array ordered by the most popular DESC
 //     // - will be limited to a certain amount within the db query

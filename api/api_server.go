@@ -17,7 +17,7 @@ func StartServer() {
     log.Println("Starting API server now.")
 
     // configurate the database connection
-    Db := new(database.Database)
+    Db := new(database.RedisDo)
     Db.Init("", 10)
 
     // set up a nice glas of martini
