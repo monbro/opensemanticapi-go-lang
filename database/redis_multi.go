@@ -15,19 +15,7 @@ import (
 )
 
 type RedisMulti struct {
-    Client redis.Conn
     Pool *redis.Pool
-}
-
-func (db *RedisMulti) Init(Password string, DbNum int) {
-    var err error
-    db.Client, err = redis.Dial("tcp", ":6379")
-    if err != nil {
-        log.Println("failed to create the client", err)
-        return
-    }
-
-    db.Client.Do("SELECT", DbNum)
 }
 
 // https://stackoverflow.com/questions/19971968/go-golang-redis-too-many-open-files-error
@@ -44,10 +32,6 @@ func (db *RedisMulti) InitPool(Password string, DbNum int) {
             return c, err
         },
     }
-}
-
-func (db *RedisMulti) Close() {
-    db.Client.Close()
 }
 
 func (db *RedisMulti) Flushall() {
