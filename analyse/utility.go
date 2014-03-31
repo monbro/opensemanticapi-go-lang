@@ -70,7 +70,6 @@ func CleanUpSnippets(snippets []string) []string {
 func GetWordsFromSnippet(text string) []string {
     re := regexp.MustCompile(` `)
     words := re.Split(text, -1)
-    log.Printf("Length word list: %+v", len(words))
 
     return words
 }

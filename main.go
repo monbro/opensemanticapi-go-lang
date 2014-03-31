@@ -12,7 +12,7 @@ import (
  */
 const (
     SNIPPET_LENGTH = 120
-    START_SEARCH_TERM = "database"
+    START_SEARCH_TERM = "london"
 )
 
 func main() {
@@ -20,6 +20,7 @@ func main() {
     // preparation to use flags
     isApiServer := flag.Bool("api", false, "Do you want to start the api server?")
     isInfiniteCronjobRun := flag.Bool("infinite", false, "Do you want to run the cronjob infinite?")
+    isFastMode := flag.Bool("fast", false, "Do you want to run in super fast mode (heavy cpu usage etc.)?")
     flag.Parse()
 
     if *isApiServer {
@@ -31,6 +32,12 @@ func main() {
         worker := new(analyse.Worker)
         worker.START_SEARCH_TERM = START_SEARCH_TERM
         worker.SNIPPET_LENGTH = SNIPPET_LENGTH
+
+        if *isFastMode {
+            worker.FastMode = true
+        } else {
+            worker.FastMode = false
+        }
 
         // check if the cronjob should run continouing
         if *isInfiniteCronjobRun {

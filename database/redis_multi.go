@@ -2,6 +2,9 @@
  * provides functions to process requests to given urls
  * - http://redis.io/commands/KEYS
  * - http://redis.io/commands
+ *
+ * https://github.com/luanjunyi/gossipd/blob/master/mqtt/redis.go would be a good abstraction class to use
+ * also interesting https://github.com/vube/redigolock/blob/master/redigolock.go
  */
 
 package database
@@ -13,6 +16,7 @@ import (
 
 type RedisMulti struct {
     Client redis.Conn
+    Pool *redis.Pool
 }
 
 func (db *RedisMulti) Init(Password string, DbNum int) {
@@ -26,6 +30,22 @@ func (db *RedisMulti) Init(Password string, DbNum int) {
     db.Client.Do("SELECT", DbNum)
 }
 
+// https://stackoverflow.com/questions/19971968/go-golang-redis-too-many-open-files-error
+func (db *RedisMulti) InitPool(Password string, DbNum int) {
+    db.Pool = &redis.Pool {
+        MaxIdle: 6000,
+        MaxActive: 60000, // max number of connections
+        Dial: func() (redis.Conn, error) {
+            c, err := redis.Dial("tcp", ":6379")
+            if err != nil {
+                    panic(err.Error())
+            }
+            c.Do("SELECT", DbNum)
+            return c, err
+        },
+    }
+}
+
 func (db *RedisMulti) Close() {
     db.Client.Close()
 }
@@ -35,18 +55,31 @@ func (db *RedisMulti) Flushall() {
 }
 
 func (db *RedisMulti) Flush() {
-    db.Client.Flush()
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Flush()
+}
+
+func (db *RedisMulti) Multi() {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Send("MULTI")
 }
 
 func (db *RedisMulti) AddPageToQueue(pageName string) {
+    r := db.Pool.Get()
+    defer r.Close()
+
     // only add page if it is not done
-    wasProcessed, e := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
+    wasProcessed, e := redis.Bool(r.Do("SISMEMBER", DONE_PAGES, pageName))
     if e != nil {
         log.Println("failed to create the client", e)
     }
 
     if !wasProcessed {
-        db.Client.Send("SADD", QUEUED_PAGES, pageName)
+        r.Send("SADD", QUEUED_PAGES, pageName)
         log.Printf("Added page to queue: '%+v'", pageName)
     } else {
         log.Println("Page is already member in queued pages: ", pageName)
@@ -54,7 +87,10 @@ func (db *RedisMulti) AddPageToQueue(pageName string) {
 }
 
 func (db *RedisMulti) AddPageToDone(pageName string) {
-    db.Client.Send("SADD", DONE_PAGES, pageName)
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Send("SADD", DONE_PAGES, pageName)
     log.Printf("Added page to done: '%+v'", pageName)
 }
 
@@ -65,17 +101,20 @@ func (db *RedisMulti) AddPagesToQueue(pagesToQueue []string) {
 }
 
 func (db *RedisMulti) RandomPageFromQueue() string {
-    pageName, e := redis.String(db.Client.Do("SRANDMEMBER", QUEUED_PAGES))
+    r := db.Pool.Get()
+    defer r.Close()
+
+    pageName, e := redis.String(r.Do("SRANDMEMBER", QUEUED_PAGES))
 
     if e != nil {
         log.Println("failed to create the client", e)
     }
 
     // remove page as well
-    db.Client.Send("SREM", QUEUED_PAGES, pageName)
+    r.Send("SREM", QUEUED_PAGES, pageName)
 
     // add page to be done
-    db.Client.Send("SADD", DONE_PAGES, pageName)
+    r.Send("SADD", DONE_PAGES, pageName)
 
     if pageName == "" {
         panic("No page in queue anymore!!!")
@@ -112,16 +151,27 @@ func (db *RedisMulti) GetAnalysedTextBlocksCounter() string {
  * private helper functions
  */
 
+func (db *RedisMulti) stripOverlappingListContent(contextList []string, stripList []string) {
+    // check the words that are
+    // maybe try http://redis.io/commands/sdiff
+}
+
 func (db *RedisMulti) createWordRelation(word string, relation string) {
+    r := db.Pool.Get()
+    defer r.Close()
+
     // add the actual maybe related word in the db
-    db.Client.Send("SADD", word, relation)
+    r.Send("SADD", word, relation)
 
     // increase counter for relation by one
-    db.Client.Send("INCR", word+":"+relation)
+    r.Send("INCR", word+":"+relation)
 }
 
 func (db *RedisMulti) getPopularRelationsByDensity(word string) []string {
-    allRelations, err := redis.Strings(db.Client.Do("SORT", word,
+    r := db.Pool.Get()
+    defer r.Close()
+
+    allRelations, err := redis.Strings(r.Do("SORT", word,
         "BY", word+":*",
         "Limit", 0, 120,
         "DESC",
@@ -134,7 +184,10 @@ func (db *RedisMulti) getPopularRelationsByDensity(word string) []string {
 }
 
 func (db *RedisMulti) getValueFromKey(key string) string {
-    value, e := redis.String(db.Client.Do("GET", key))
+    r := db.Pool.Get()
+    defer r.Close()
+
+    value, e := redis.String(r.Do("GET", key))
     if e != nil {
         return "0" // @TODO thats not a proper solution, refactor this one
     }
@@ -147,6 +200,9 @@ func (db *RedisMulti) getValueFromKey(key string) string {
  */
 
 func (db *RedisMulti) RaiseScrapedTextBlocksCounter() {
+    r := db.Pool.Get()
+    defer r.Close()
+
     // increase counter for relation by one
-    db.Client.Send("INCR", TEXTBLOCKS_COUNTER)
+    r.Send("INCR", TEXTBLOCKS_COUNTER)
 }

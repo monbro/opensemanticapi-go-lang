@@ -8,9 +8,12 @@ import (
     "log"
     "net/url"
     "encoding/json"
+    "sync"
+    "strconv"
     "github.com/monbro/opensemanticapi-go-lang/scraper"
     "github.com/monbro/opensemanticapi-go-lang/requestStruct"
     "github.com/monbro/opensemanticapi-go-lang/database"
+    "syscall"
 )
 
 type Worker struct {
@@ -19,6 +22,8 @@ type Worker struct {
     START_SEARCH_TERM string
     SNIPPET_LENGTH int
     InfiniteWorking bool
+    FastMode bool
+    Wg sync.WaitGroup
 }
 
 /**
@@ -26,13 +31,34 @@ type Worker struct {
  */
 func (w *Worker) Run() {
 
+    if w.FastMode {
+        // via https://stackoverflow.com/questions/17817204/how-to-set-ulimit-n-from-a-golang-program
+        var rLimit syscall.Rlimit
+        err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+        if err != nil {
+            log.Println("Error Getting Rlimit ", err)
+        }
+        log.Println(rLimit)
+        rLimit.Max = 999999
+        rLimit.Cur = 999999
+        err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+        if err != nil {
+            log.Println("Error Setting Rlimit ", err)
+        }
+        err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+        if err != nil {
+            log.Println("Error Getting Rlimit ", err)
+        }
+        log.Println("Rlimit Final", rLimit)
+    }
+
     if w.InfiniteWorking != true {
         w.InfiniteWorking = false
     }
 
     // init database
     w.Db = new(database.RedisMulti)
-    w.Db.Init("", 10)
+    w.Db.InitPool("", 10)
 
     // initial start
     w.RunNext(w.START_SEARCH_TERM)
@@ -67,26 +93,29 @@ func (w *Worker) RunNext(searchTerm string) {
     snippets := GetSnippetsFromText(rawContent)
     snippets = CleanUpSnippets(snippets)
 
+    w.Db.Multi()
+
     for i := range snippets {
         if w.SNIPPET_LENGTH < len(snippets[i]) {
-            log.Printf("LENG SNIPPET: '%+v'",len(snippets[i]))
-            log.Printf("Snippet raw: %+v", len(snippetsRaw[i]))
-            log.Printf("Snippet cleaned: %+v", len(snippets[i]))
-            log.Printf("==========================================================================================")
+            log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
 
             // analyse the text block
-            w.CreateSnippetWordsReplations(snippets[i])
+            go w.CreateSnippetWordsRelation(snippets[i])
 
             // raise counter for text blocks
             w.Db.RaiseScrapedTextBlocksCounter()
         }
     }
 
+    if !w.FastMode {
+        // wait for all snippets to be finished
+        w.Wg.Wait()
+    }
+
     // flush the queued commands from the pipeline
     w.Db.Flush()
 
     if w.InfiniteWorking {
-
 
         // create aloop by calling it self for the next search term
         w.RunNext(w.Db.RandomPageFromQueue())
@@ -148,8 +177,15 @@ func GetWikipediaPage(firstPage string) string {
 
 /**
  * will analyse a snippet by spinning relations between each word within this snippet
+ *
+ * @TODO should be changed to fit https://gobyexample.com/worker-pools probably?
  */
-func (w *Worker) CreateSnippetWordsReplations(snippet string) {
+func (w *Worker) CreateSnippetWordsRelation(snippet string) {
+
+    if !w.FastMode {
+        w.Wg.Add(1)
+    }
+
     words := GetWordsFromSnippet(snippet)
     for _, word := range words {
         // check if word has more than 2 letters and this includes checking for an empty string
@@ -159,11 +195,14 @@ func (w *Worker) CreateSnippetWordsReplations(snippet string) {
                 // check if the relation is more than 2 letters long and not an empty string
                 if word != relation &&
                     len(relation) > 2 {
-                    w.Db.AddWordRelation(word, relation)
+                        w.Db.AddWordRelation(word, relation)
                 }
             }
         }
+    }
 
+    if !w.FastMode {
+        w.Wg.Done()
     }
 }
 
