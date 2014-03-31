@@ -17,13 +17,14 @@ func TestRedisMulti(t *testing.T) {
 
     // establish a connection with the database
     Db := new(database.RedisMulti)
-    Db.Init(pwd, dbPort)
-    defer Db.Close();
+    Db.InitPool(pwd, dbPort)
 
     testRunnerRedisMulti(t, Db)
 }
 
 func testRunnerRedisMulti(t *testing.T, Db *database.RedisMulti) {
+
+    r := Db.Pool.Get()
 
     // flush database before tests
     Db.Flushall()
@@ -37,11 +38,11 @@ func testRunnerRedisMulti(t *testing.T, Db *database.RedisMulti) {
             keyValue := time.Now().String()
 
             Convey("should save the key", func() {
-                _, e := Db.Client.Do("SET", key, keyValue)
+                _, e := r.Do("SET", key, keyValue)
                 So(e, ShouldEqual, nil)
 
                 Convey("should receive the key", func() {
-                    value, e := redis.String(Db.Client.Do("GET", key))
+                    value, e := redis.String(r.Do("GET", key))
                     So(e, ShouldEqual, nil)
                     So(keyValue, ShouldEqual, value)
                 })
@@ -58,7 +59,7 @@ func testRunnerRedisMulti(t *testing.T, Db *database.RedisMulti) {
 
                 // get a slice which will exclude the first element as we processing this one soon
                 Db.AddPagesToQueue(pagesToQueue)
-                amountQueuedPages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.QUEUED_PAGES))
+                amountQueuedPages, _ := redis.Strings(r.Do("SMEMBERS", database.QUEUED_PAGES))
 
                 So(len(amountQueuedPages), ShouldEqual, 2)
 
@@ -68,11 +69,11 @@ func testRunnerRedisMulti(t *testing.T, Db *database.RedisMulti) {
                     So(randomPage, ShouldBeIn, pagesToQueue)
 
                     // refresh local variable
-                    amountQueuedPages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.QUEUED_PAGES))
+                    amountQueuedPages, _ := redis.Strings(r.Do("SMEMBERS", database.QUEUED_PAGES))
 
                     So(len(amountQueuedPages), ShouldEqual, 1)
 
-                    amountDonePages, _ := redis.Strings(Db.Client.Do("SMEMBERS", database.DONE_PAGES))
+                    amountDonePages, _ := redis.Strings(r.Do("SMEMBERS", database.DONE_PAGES))
                     So(len(amountDonePages), ShouldEqual, 1)
                 })
             })
@@ -91,12 +92,12 @@ func testRunnerRedisMulti(t *testing.T, Db *database.RedisMulti) {
             })
 
             Convey("should have added a coutner for ham", func() {
-                hamCounter, _ := redis.Int(Db.Client.Do("GET", "bacon:ham"))
+                hamCounter, _ := redis.Int(r.Do("GET", "bacon:ham"))
                 So(hamCounter, ShouldEqual, 3)
             })
 
             Convey("should have added a coutner for salami", func() {
-                hamCounter, _ := redis.Int(Db.Client.Do("GET", "bacon:salami"))
+                hamCounter, _ := redis.Int(r.Do("GET", "bacon:salami"))
                 So(hamCounter, ShouldEqual, 1)
             })
 

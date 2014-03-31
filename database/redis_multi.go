@@ -51,7 +51,10 @@ func (db *RedisMulti) Close() {
 }
 
 func (db *RedisMulti) Flushall() {
-    db.Client.Do("FLUSHALL")
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Do("FLUSHALL")
 }
 
 func (db *RedisMulti) Flush() {
