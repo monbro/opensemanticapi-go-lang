@@ -52,6 +52,7 @@ func (w *Worker) Run() {
         log.Println("Rlimit Final", rLimit)
     }
 
+    // set flag if given
     if w.InfiniteWorking != true {
         w.InfiniteWorking = false
     }
@@ -89,23 +90,25 @@ func (w *Worker) RunNext(searchTerm string) {
 
     rawContent := GetWikipediaPage(pages[0])
 
-    snippetsRaw := GetSnippetsFromText(rawContent)
+    // snippetsRaw := GetSnippetsFromText(rawContent)
     snippets := GetSnippetsFromText(rawContent)
     snippets = CleanUpSnippets(snippets)
 
     w.Db.Multi()
 
-    for i := range snippets {
-        if w.SNIPPET_LENGTH < len(snippets[i]) {
-            log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
+    go snippetWorker(snippets, w.Db, w.SNIPPET_LENGTH)
 
-            // analyse the text block
-            go w.CreateSnippetWordsRelation(snippets[i])
+    // for i := range snippets {
+    //     if w.SNIPPET_LENGTH < len(snippets[i]) {
+    //         log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
 
-            // raise counter for text blocks
-            w.Db.RaiseScrapedTextBlocksCounter()
-        }
-    }
+    //         // analyse the text block
+    //         go w.CreateSnippetWordsRelation(snippets[i])
+
+    //         // raise counter for text blocks
+    //         w.Db.RaiseScrapedTextBlocksCounter()
+    //     }
+    // }
 
     if !w.FastMode {
         // wait for all snippets to be finished
@@ -173,6 +176,33 @@ func GetWikipediaPage(firstPage string) string {
 
     // otherwise return an empty string
     return ""
+}
+
+func snippetWorker(snippets []string, Db *database.RedisMulti, SNIPPET_LENGTH int) {
+    for i := range snippets {
+        if SNIPPET_LENGTH < len(snippets[i]) {
+            log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippets[i])))
+
+            // analyse the text block
+            words := GetWordsFromSnippet(snippets[i])
+            for _, word := range words {
+                // check if word has more than 2 letters and this includes checking for an empty string
+                if len(word) > 2 {
+                    for _, relation := range words {
+                        // check if we not adding a relation to the word itself
+                        // check if the relation is more than 2 letters long and not an empty string
+                        if word != relation &&
+                            len(relation) > 2 {
+                                Db.AddWordRelation(word, relation)
+                        }
+                    }
+                }
+            }
+
+            // raise counter for text blocks
+            Db.RaiseScrapedTextBlocksCounter()
+        }
+    }
 }
 
 /**
