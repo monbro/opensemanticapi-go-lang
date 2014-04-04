@@ -19,8 +19,8 @@ func main() {
 
     // preparation to use flags
     isApiServer := flag.Bool("api", false, "Do you want to start the api server?")
-    isInfiniteCronjobRun := flag.Bool("infinite", false, "Do you want to run the cronjob infinite?")
     isFastMode := flag.Bool("fast", false, "Do you want to run in super fast mode (heavy cpu usage etc.)?")
+    isInfiniteCronjobRun := flag.Bool("infinite", false, "Do you want to run the cronjob infinite?")
     flag.Parse()
 
     if *isApiServer {
@@ -33,16 +33,8 @@ func main() {
         worker.START_SEARCH_TERM = START_SEARCH_TERM
         worker.SNIPPET_LENGTH = SNIPPET_LENGTH
 
-        if *isFastMode {
-            worker.FastMode = true
-        } else {
-            worker.FastMode = false
-        }
-
-        // check if the cronjob should run continouing
-        if *isInfiniteCronjobRun {
-            worker.InfiniteWorking = true
-        }
+        worker.isFastMode = *isFastMode
+        worker.isInfiniteWorking = *isInfiniteCronjobRun
 
         worker.Run()
     }

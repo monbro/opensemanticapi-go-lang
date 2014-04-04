@@ -5,15 +5,14 @@
 package analyse
 
 import (
-    "log"
     "net/url"
     "encoding/json"
     "sync"
     "strconv"
+    "github.com/golang/glog"
     "github.com/monbro/opensemanticapi-go-lang/scraper"
     "github.com/monbro/opensemanticapi-go-lang/requestStruct"
     "github.com/monbro/opensemanticapi-go-lang/database"
-    "syscall"
 )
 
 type Worker struct {
@@ -21,8 +20,8 @@ type Worker struct {
     Db *database.RedisMulti
     START_SEARCH_TERM string
     SNIPPET_LENGTH int
-    InfiniteWorking bool
-    FastMode bool
+    IsInfiniteWorking bool
+    IsFastMode bool
     Wg sync.WaitGroup
 }
 
@@ -31,30 +30,18 @@ type Worker struct {
  */
 func (w *Worker) Run() {
 
-    if w.FastMode {
-        // via https://stackoverflow.com/questions/17817204/how-to-set-ulimit-n-from-a-golang-program
-        var rLimit syscall.Rlimit
-        err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-        if err != nil {
-            log.Println("Error Getting Rlimit ", err)
-        }
-        log.Println(rLimit)
-        rLimit.Max = 999999
-        rLimit.Cur = 999999
-        err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-        if err != nil {
-            log.Println("Error Setting Rlimit ", err)
-        }
-        err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-        if err != nil {
-            log.Println("Error Getting Rlimit ", err)
-        }
-        log.Println("Rlimit Final", rLimit)
+    // set flag if given
+    if w.IsInfiniteWorking != true {
+        w.IsInfiniteWorking = false
     }
 
     // set flag if given
-    if w.InfiniteWorking != true {
-        w.InfiniteWorking = false
+    if w.IsFastMode != true {
+        w.IsFastMode = false
+    }
+
+    if w.IsFastMode {
+        MaximumUlimit()
     }
 
     // init database
@@ -70,7 +57,7 @@ func (w *Worker) Run() {
  */
 func (w *Worker) RunNext(searchTerm string) {
 
-    log.Printf("Searchterm Now: '%+v'", searchTerm)
+    glog.Infof("Searchterm Now: '%+v'", searchTerm)
 
     // declare needed variables
     var pages []string
@@ -90,35 +77,35 @@ func (w *Worker) RunNext(searchTerm string) {
 
     rawContent := GetWikipediaPage(pages[0])
 
-    // snippetsRaw := GetSnippetsFromText(rawContent)
+    snippetsRaw := GetSnippetsFromText(rawContent)
     snippets := GetSnippetsFromText(rawContent)
     snippets = CleanUpSnippets(snippets)
 
     w.Db.Multi()
 
-    go snippetWorker(snippets, w.Db, w.SNIPPET_LENGTH)
+    for i := range snippets {
+        if w.SNIPPET_LENGTH < len(snippets[i]) {
+            // log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
+            glog.Info("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
 
-    // for i := range snippets {
-    //     if w.SNIPPET_LENGTH < len(snippets[i]) {
-    //         log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
+            // analyse the text block
+            go w.CreateSnippetWordsRelation(snippets[i])
 
-    //         // analyse the text block
-    //         go w.CreateSnippetWordsRelation(snippets[i])
+            // raise counter for text blocks
+            w.Db.RaiseScrapedTextBlocksCounter()
+        }
+    }
 
-    //         // raise counter for text blocks
-    //         w.Db.RaiseScrapedTextBlocksCounter()
-    //     }
-    // }
-
-    if !w.FastMode {
+    if !w.IsFastMode {
         // wait for all snippets to be finished
+        glog.Info("Waiting now to have all the go routines completed")
         w.Wg.Wait()
     }
 
     // flush the queued commands from the pipeline
     w.Db.Flush()
 
-    if w.InfiniteWorking {
+    if w.IsInfiniteWorking {
 
         // create aloop by calling it self for the next search term
         w.RunNext(w.Db.RandomPageFromQueue())
@@ -133,7 +120,7 @@ func SearchWikipedia(searchTerm string) []string {
     rb := new(scraper.RequestBit)
 
     rb.Url = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+url.QueryEscape(searchTerm)+"&format=json"
-    log.Printf("Url crawling in SearchWikipedia: %+v", rb.Url)
+    glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
 
     // inject the struct for the json response
     rb.ResponseObjectInterface = new(requestStruct.WikiSearch)
@@ -159,7 +146,7 @@ func GetWikipediaPage(firstPage string) string {
     // lets create a new http request object
     rb := new(scraper.RequestBit)
     rb.Url = "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles="+url.QueryEscape(firstPage)
-    log.Printf("Url crawling in GetWikipediaPage: %+v", rb.Url)
+    glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
 
     // inject the struct for the json response
     rb.ResponseObjectInterface = new(requestStruct.WikiPage)
@@ -178,33 +165,6 @@ func GetWikipediaPage(firstPage string) string {
     return ""
 }
 
-func snippetWorker(snippets []string, Db *database.RedisMulti, SNIPPET_LENGTH int) {
-    for i := range snippets {
-        if SNIPPET_LENGTH < len(snippets[i]) {
-            log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippets[i])))
-
-            // analyse the text block
-            words := GetWordsFromSnippet(snippets[i])
-            for _, word := range words {
-                // check if word has more than 2 letters and this includes checking for an empty string
-                if len(word) > 2 {
-                    for _, relation := range words {
-                        // check if we not adding a relation to the word itself
-                        // check if the relation is more than 2 letters long and not an empty string
-                        if word != relation &&
-                            len(relation) > 2 {
-                                Db.AddWordRelation(word, relation)
-                        }
-                    }
-                }
-            }
-
-            // raise counter for text blocks
-            Db.RaiseScrapedTextBlocksCounter()
-        }
-    }
-}
-
 /**
  * will analyse a snippet by spinning relations between each word within this snippet
  *
@@ -212,7 +172,7 @@ func snippetWorker(snippets []string, Db *database.RedisMulti, SNIPPET_LENGTH in
  */
 func (w *Worker) CreateSnippetWordsRelation(snippet string) {
 
-    if !w.FastMode {
+    if !w.IsFastMode {
         w.Wg.Add(1)
     }
 
@@ -231,10 +191,40 @@ func (w *Worker) CreateSnippetWordsRelation(snippet string) {
         }
     }
 
-    if !w.FastMode {
+    if !w.IsFastMode {
         w.Wg.Done()
     }
 }
+
+/**
+ * thats how the method would like with as a autarkic function
+ */
+// func snippetWorker(snippets []string, Db *database.RedisMulti, SNIPPET_LENGTH int) {
+//     for i := range snippets {
+//         if SNIPPET_LENGTH < len(snippets[i]) {
+//             log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippets[i])))
+
+//             // analyse the text block
+//             words := GetWordsFromSnippet(snippets[i])
+//             for _, word := range words {
+//                 // check if word has more than 2 letters and this includes checking for an empty string
+//                 if len(word) > 2 {
+//                     for _, relation := range words {
+//                         // check if we not adding a relation to the word itself
+//                         // check if the relation is more than 2 letters long and not an empty string
+//                         if word != relation &&
+//                             len(relation) > 2 {
+//                                 Db.AddWordRelation(word, relation)
+//                         }
+//                     }
+//                 }
+//             }
+
+//             // raise counter for text blocks
+//             Db.RaiseScrapedTextBlocksCounter()
+//         }
+//     }
+// }
 
 /**
  * will search wikipedia for a search term and return existing matching pages
@@ -247,7 +237,7 @@ func OpenSearchWikipedia(searchTerm string) []string {
     rb := new(scraper.RequestBit)
 
     rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search="+url.QueryEscape(searchTerm)+"&format=json&limit=3"
-    log.Printf("Url crawling in SearchWikipedia: %+v", rb.Url)
+    glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
     rb.Work() // fire the request
 
     // as wikipedia returns a sh*t formatted json we need to assign the result in two steps
@@ -255,15 +245,13 @@ func OpenSearchWikipedia(searchTerm string) []string {
 
     // first step is to assign the result term which is the first item in the returned array
     if err := json.Unmarshal(rb.ResponseArrayRawJson[0], &wikiOpenSearch.SearchTerm); err != nil {
-        log.Fatalln("expect string:", err)
+        glog.Fatalf("expect string: %+v", err)
     }
 
     // second step is to assign the second item into the 'Results' array
     if err := json.Unmarshal(rb.ResponseArrayRawJson[1], &wikiOpenSearch.Results); err != nil {
-        log.Fatalln("expect []string:", err)
+        glog.Fatalf("expect []string: %+v", err)
     }
-
-    // log.Printf("wikiOpenSearch is: %+v", wikiOpenSearch)
 
     return wikiOpenSearch.Results
 }

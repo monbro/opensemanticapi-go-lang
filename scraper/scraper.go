@@ -5,10 +5,10 @@
 package scraper
 
 import (
-    "log"
     "io/ioutil"
     "net/http"
     "encoding/json"
+    "github.com/golang/glog"
 )
 
 const(
@@ -42,17 +42,17 @@ func (rb *RequestBit) Work() {
 
     // fill the interface if is set
     if err := json.Unmarshal(b, &rb.ResponseObjectInterface); err != nil {
-        log.Printf("error within json.Unmarshal for ResponseObjectInterface:", err)
+        glog.Warningf("error within json.Unmarshal for ResponseObjectInterface:", err)
     }
 
     // fill the raw json object
     if err := json.Unmarshal(b, &rb.ResponseObjectRawJson); err != nil {
-        log.Printf("error within json.Unmarshal for ResponseObjectRawJson:", err)
+        glog.Warningf("error within json.Unmarshal for ResponseObjectRawJson:", err)
     }
 
     // fill the raw json
     if err := json.Unmarshal(b, &rb.ResponseArrayRawJson); err != nil {
-        log.Printf("error within json.Unmarshal for ResponseArrayRawJson:", err)
+        glog.Warningf("error within json.Unmarshal for ResponseArrayRawJson:", err)
     }
 }
 
@@ -90,8 +90,8 @@ func (rb *RequestBit) GetByteCodeFromUrlFake() []byte{
  *  will dump the url and the plain api response string
  */
 func (rb *RequestBit) DebugMe() {
-    log.Printf("DEBUG START ---------------------------")
-    log.Printf("URL: %+v", rb.Url)
-    log.Printf("RESPONSE: %+v", rb.PlainResponse)
-    log.Printf("DEBUG END ---------------------------")
+    glog.Infof("DEBUG START ---------------------------")
+    glog.Infof("URL: %+v", rb.Url)
+    glog.Infof("RESPONSE: %+v", rb.PlainResponse)
+    glog.Infof("DEBUG END ---------------------------")
 }

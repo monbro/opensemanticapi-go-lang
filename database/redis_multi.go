@@ -11,7 +11,7 @@ package database
 
 import (
     "github.com/garyburd/redigo/redis"
-    "log"
+    "github.com/golang/glog"
 )
 
 type RedisMulti struct {
@@ -62,14 +62,14 @@ func (db *RedisMulti) AddPageToQueue(pageName string) {
     // only add page if it is not done
     wasProcessed, e := redis.Bool(r.Do("SISMEMBER", DONE_PAGES, pageName))
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Infof("failed to create the client", e)
     }
 
     if !wasProcessed {
         r.Send("SADD", QUEUED_PAGES, pageName)
-        log.Printf("Added page to queue: '%+v'", pageName)
+        glog.Infof("Added page to queue: '%+v'", pageName)
     } else {
-        log.Println("Page is already member in queued pages: ", pageName)
+        glog.Infof("Page is already member in queued pages: ", pageName)
     }
 }
 
@@ -78,7 +78,7 @@ func (db *RedisMulti) AddPageToDone(pageName string) {
     defer r.Close()
 
     r.Send("SADD", DONE_PAGES, pageName)
-    log.Printf("Added page to done: '%+v'", pageName)
+    glog.Infof("Added page to done: '%+v'", pageName)
 }
 
 func (db *RedisMulti) AddPagesToQueue(pagesToQueue []string) {
@@ -94,7 +94,7 @@ func (db *RedisMulti) RandomPageFromQueue() string {
     pageName, e := redis.String(r.Do("SRANDMEMBER", QUEUED_PAGES))
 
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
     }
 
     // remove page as well

@@ -180,31 +180,3 @@ func (db *RedisDo) RaiseScrapedTextBlocksCounter() {
         log.Println("failed to create the client", e)
     }
 }
-
-// keeping for memories or what?? :-)
-// func (db *RedisDo) GetPopularWordRelationsOld(word string) []string {
-//     // @TODO implement
-//     // - return a array ordered by the most popular DESC
-//     // - will be limited to a certain amount within the db query
-
-//     log.Printf("Recevive for '%+v'", word)
-
-//     wordRelationsBytes, e := db.Client.Smembers(word)
-//     if e != nil {
-//         log.Println("failed to get relations for this one", e)
-//         // panic("No Url provided!")
-//     }
-
-//     log.Printf("Len '%+v'", len(wordRelationsBytes))
-
-//     // allRelations := []string{"test", "test1"}
-
-//     var allRelations []string
-//     for i := range wordRelationsBytes {
-//         allRelations = append(allRelations, string(wordRelationsBytes[i][:]))
-//         log.Printf("Loop '%+v'", string(wordRelationsBytes[i][:]))
-//     }
-
-//     return allRelations
-// }
-

@@ -10,6 +10,7 @@ import (
     "regexp"
     "bytes"
     "html/template"
+    "syscall"
 )
 
 /**
@@ -18,7 +19,6 @@ import (
 func GetSnippetsFromText(text string) []string {
     re := regexp.MustCompile("\n|\r")
     snippets := re.Split(text, -1)
-    log.Printf("Length snippets: %+v", len(snippets))
 
     return snippets
 }
@@ -125,4 +125,25 @@ func RemoveHtmlTags(s string) (output string) {
     output = strings.Replace(output, "&amp;amp; ", " ", -1)
 
     return output
+}
+
+func MaximumUlimit() {
+    // via https://stackoverflow.com/questions/17817204/how-to-set-ulimit-n-from-a-golang-program
+    var rLimit syscall.Rlimit
+    err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+    if err != nil {
+        log.Println("Error Getting Rlimit ", err)
+    }
+    log.Println(rLimit)
+    rLimit.Max = 999999
+    rLimit.Cur = 999999
+    err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+    if err != nil {
+        log.Println("Error Setting Rlimit ", err)
+    }
+    err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
+    if err != nil {
+        log.Println("Error Getting Rlimit ", err)
+    }
+    log.Println("Rlimit Final", rLimit)
 }
