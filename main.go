@@ -12,7 +12,8 @@ import (
  */
 const (
     SnippetLength = 120
-    StartSearchTerm = "london"
+    // @TODO replace trough a bunch of words to give a better direction at start, like 50 most popular words in the past 5 years
+    StartSearchTerm = "fire"
 )
 
 func main() {
