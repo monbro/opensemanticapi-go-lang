@@ -40,6 +40,6 @@ func main() {
                         )
 
         glog.Info("Starting cronjob ...")
-        worker.Run()
+        worker.Start()
     }
 }

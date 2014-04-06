@@ -39,19 +39,9 @@ func (w *SerialA) Configuration(
 /**
  * will initially start the process
  */
-func (w *SerialA) Run() {
+func (w *SerialA) Start() {
 
     glog.Info("Using adapter serialA ...")
-
-    // set flag if given
-    if w.IsInfiniteWorking != true {
-        w.IsInfiniteWorking = false
-    }
-
-    // set flag if given
-    if w.IsFastMode != true {
-        w.IsFastMode = false
-    }
 
     if w.IsFastMode {
         util.MaximumUlimit()
@@ -62,13 +52,13 @@ func (w *SerialA) Run() {
     w.Db.Init("", 10)
 
     // initial start
-    w.RunNext(w.StartSearchTerm)
+    w.Runner(w.StartSearchTerm)
 }
 
 /**
  * will run the process of storing words that are related in its context
  */
-func (w *SerialA) RunNext(searchTerm string) {
+func (w *SerialA) Runner(searchTerm string) {
 
     glog.Infof("Searchterm Now: '%+v'", searchTerm)
 
@@ -114,7 +104,7 @@ func (w *SerialA) RunNext(searchTerm string) {
     if w.InfiniteWorking {
 
         // create aloop by calling it self for the next search term
-        w.RunNext(w.Db.RandomPageFromQueue())
+        w.Runner(w.Db.RandomPageFromQueue())
     }
 }
 

@@ -42,19 +42,9 @@ func (w *ConcurrencyA) Configuration(
 /**
  * will initially start the process
  */
-func (w *ConcurrencyA) Run() {
+func (w *ConcurrencyA) Start() {
 
     glog.Info("Using adapter concurrencyA ...")
-
-    // set flag if given
-    if w.IsInfiniteWorking != true {
-        w.IsInfiniteWorking = false
-    }
-
-    // set flag if given
-    if w.IsFastMode != true {
-        w.IsFastMode = false
-    }
 
     if w.IsFastMode {
         util.MaximumUlimit()
@@ -65,13 +55,13 @@ func (w *ConcurrencyA) Run() {
     w.Db.Init("", 10)
 
     // initial start
-    w.RunNext(w.StartSearchTerm)
+    w.Runner(w.StartSearchTerm)
 }
 
 /**
  * will run the process of storing words that are related in its context
  */
-func (w *ConcurrencyA) RunNext(searchTerm string) {
+func (w *ConcurrencyA) Runner(searchTerm string) {
 
     glog.Infof("Searchterm Now: '%+v'", searchTerm)
 
@@ -124,7 +114,7 @@ func (w *ConcurrencyA) RunNext(searchTerm string) {
     if w.IsInfiniteWorking {
 
         // create aloop by calling it self for the next search term
-        w.RunNext(w.Db.RandomPageFromQueue())
+        w.Runner(w.Db.RandomPageFromQueue())
     }
 }
 

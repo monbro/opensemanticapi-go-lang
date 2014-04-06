@@ -4,8 +4,8 @@ import (
 )
 
 type AdapterInterface interface {
-    Run()
-    RunNext(string)
+    Start()
+    Runner(string)
     CreateSnippetWordsRelation(string)
     Configuration(string, int, bool, bool)
 }

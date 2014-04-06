@@ -34,7 +34,7 @@ func BenchmarkDefaultWorkerFastMode(b *testing.B) {
     // reset the brenchmark timer
     b.ResetTimer()
 
-    worker.RunNext(searchTerm)
+    worker.Runner(searchTerm)
 
     r := Db.Pool.Get()
     defer r.Close()
@@ -65,7 +65,7 @@ func BenchmarkDefaultWorker(b *testing.B) {
     // reset the brenchmark timer
     b.ResetTimer()
 
-    worker.RunNext(searchTerm)
+    worker.Runner(searchTerm)
 
     r := Db.Pool.Get()
     defer r.Close()
@@ -96,7 +96,7 @@ func BenchmarkWorkerSerial(b *testing.B) {
     b.ResetTimer()
 
     // run the actual task to test against
-    worker.RunNext(searchTerm)
+    worker.Runner(searchTerm)
 
     r := Db.Pool.Get()
     defer r.Close()
