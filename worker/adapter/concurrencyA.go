@@ -10,7 +10,7 @@ import (
     "sync"
     "strconv"
     "github.com/golang/glog"
-    "github.com/monbro/opensemanticapi-go-lang/analyse/util"
+    "github.com/monbro/opensemanticapi-go-lang/worker/util"
     "github.com/monbro/opensemanticapi-go-lang/scraper"
     "github.com/monbro/opensemanticapi-go-lang/requestStruct"
     "github.com/monbro/opensemanticapi-go-lang/database"
@@ -44,6 +44,8 @@ func (w *ConcurrencyA) Configuration(
  */
 func (w *ConcurrencyA) Run() {
 
+    glog.Info("Using adapter concurrencyA ...")
+
     // set flag if given
     if w.IsInfiniteWorking != true {
         w.IsInfiniteWorking = false
@@ -60,7 +62,7 @@ func (w *ConcurrencyA) Run() {
 
     // init database
     w.Db = new(database.RedisMulti)
-    w.Db.InitPool("", 10)
+    w.Db.Init("", 10)
 
     // initial start
     w.RunNext(w.StartSearchTerm)

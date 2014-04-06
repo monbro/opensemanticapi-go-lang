@@ -4,8 +4,8 @@ import(
     "testing"
     // . "github.com/smartystreets/goconvey/convey"
     "github.com/monbro/opensemanticapi-go-lang/database"
-    // "github.com/monbro/opensemanticapi-go-lang/analyse"
-    analyseAdapter "github.com/monbro/opensemanticapi-go-lang/analyse/adapter"
+    // "github.com/monbro/opensemanticapi-go-lang/worker"
+    analyseAdapter "github.com/monbro/opensemanticapi-go-lang/worker/adapter"
     "log"
     "strconv"
 )
@@ -21,7 +21,7 @@ func BenchmarkDefaultWorkerFastMode(b *testing.B) {
 
     // establish a connection with the database
     Db := new(database.RedisMulti)
-    Db.InitPool(pwd, dbPort)
+    Db.Init(pwd, dbPort)
     Db.Flushall()
 
     worker := new(analyseAdapter.ConcurrencyA)
@@ -52,7 +52,7 @@ func BenchmarkDefaultWorker(b *testing.B) {
 
     // establish a connection with the database
     Db := new(database.RedisMulti)
-    Db.InitPool(pwd, dbPort)
+    Db.Init(pwd, dbPort)
     Db.Flushall()
 
     worker := new(analyseAdapter.ConcurrencyA)
@@ -83,7 +83,7 @@ func BenchmarkWorkerSerial(b *testing.B) {
 
     // establish a connection with the database
     Db := new(database.RedisMulti)
-    Db.InitPool(pwd, dbPort)
+    Db.Init(pwd, dbPort)
     Db.Flushall()
 
     worker := new(analyseAdapter.SerialA)

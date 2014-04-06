@@ -19,7 +19,7 @@ type RedisMulti struct {
 }
 
 // https://stackoverflow.com/questions/19971968/go-golang-redis-too-many-open-files-error
-func (db *RedisMulti) InitPool(Password string, DbNum int) {
+func (db *RedisMulti) Init(Password string, DbNum int) {
     db.Pool = &redis.Pool {
         MaxIdle: 6000,
         MaxActive: 60000, // max number of connections
@@ -32,6 +32,10 @@ func (db *RedisMulti) InitPool(Password string, DbNum int) {
             return c, err
         },
     }
+}
+
+func (db *RedisMulti) Close() {
+    db.Pool.Close()
 }
 
 func (db *RedisMulti) Flushall() {

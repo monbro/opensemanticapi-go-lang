@@ -5,15 +5,17 @@
 * check the goconvey documenation: https://github.com/smartystreets/goconvey/wiki/Documentation
 * and check the available assertions: https://github.com/smartystreets/goconvey/wiki/Assertions
 
-Add the flag "-v" to print log messages to each command or see https://github.com/golang/glog/blob/master/glog.go.
-
 **How to run all test's manually**
 
 * ```go test github.com/monbro/opensemanticapi-go-lang/tests/scraper```
 * ```go test github.com/monbro/opensemanticapi-go-lang/tests/database```
-* ```go test github.com/monbro/opensemanticapi-go-lang/tests/analyse``` // @TODO write tests
+* ```go test github.com/monbro/opensemanticapi-go-lang/tests/worker``` // @TODO write tests
 * ```go test github.com/monbro/opensemanticapi-go-lang/tests/api``` // @TODO write tests
 * ```go test github.com/monbro/opensemanticapi-go-lang/tests/requestStruct```
+
+**Flags when running tests**
+
+Add the flag "-v" to print log messages to each command or see https://github.com/golang/glog/blob/master/glog.go.
 
 **How to run benchmark test's manually**
 

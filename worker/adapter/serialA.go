@@ -9,7 +9,7 @@ package adapter
 import (
     "github.com/golang/glog"
     "strconv"
-    "github.com/monbro/opensemanticapi-go-lang/analyse/util"
+    "github.com/monbro/opensemanticapi-go-lang/worker/util"
     "github.com/monbro/opensemanticapi-go-lang/database"
 )
 
@@ -41,6 +41,8 @@ func (w *SerialA) Configuration(
  */
 func (w *SerialA) Run() {
 
+    glog.Info("Using adapter serialA ...")
+
     // set flag if given
     if w.IsInfiniteWorking != true {
         w.IsInfiniteWorking = false
@@ -57,7 +59,7 @@ func (w *SerialA) Run() {
 
     // init database
     w.Db = new(database.RedisMulti)
-    w.Db.InitPool("", 10)
+    w.Db.Init("", 10)
 
     // initial start
     w.RunNext(w.StartSearchTerm)

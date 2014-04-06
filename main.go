@@ -1,10 +1,10 @@
 package main
 
 import (
-    "github.com/monbro/opensemanticapi-go-lang/analyse"
+    "github.com/golang/glog"
+    "github.com/monbro/opensemanticapi-go-lang/worker"
     "github.com/monbro/opensemanticapi-go-lang/api"
     "flag"
-    "fmt"
 )
 
 /**
@@ -24,7 +24,7 @@ func main() {
     flag.Parse()
 
     if *isApiServer {
-        fmt.Println("Starting API server ...")
+        glog.Info("Starting API server ...")
         api.StartServer()
     } else {
 
@@ -39,7 +39,7 @@ func main() {
                             *isInfiniteCronjobRun,
                         )
 
-        fmt.Println("Starting cronjob ...")
+        glog.Info("Starting cronjob ...")
         worker.Run()
     }
 }

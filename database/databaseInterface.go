@@ -3,17 +3,17 @@ package database
 import (
 )
 
-type database interface {
-    Init()
+type DatabaseInterface interface {
+    Init(string, int)
     Close()
     Flushall()
-    AddPageToQueue()
-    AddPageToDone()
-    AddPagesToQueue()
-    RandomPageFromQueue()
-    AddWordRelation()
-    GetPopularWordRelations()
-    GetMostPopularWords()
-    GetAnalysedTextBlocksCounter()
+    AddPageToQueue(string)
+    AddPageToDone(string)
+    AddPagesToQueue([]string)
+    RandomPageFromQueue() string
+    AddWordRelation(string, string)
+    GetPopularWordRelations(string) []string
+    GetMostPopularWords() []string
+    GetAnalysedTextBlocksCounter() string
     RaiseScrapedTextBlocksCounter()
 }

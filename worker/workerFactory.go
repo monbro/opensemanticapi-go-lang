@@ -5,7 +5,7 @@
 package analyse
 
 import (
-    "github.com/monbro/opensemanticapi-go-lang/analyse/adapter"
+    "github.com/monbro/opensemanticapi-go-lang/worker/adapter"
 )
 
 func WorkerFactory(

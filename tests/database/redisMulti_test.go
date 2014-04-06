@@ -17,7 +17,7 @@ func TestRedisMulti(t *testing.T) {
 
     // establish a connection with the database
     Db := new(database.RedisMulti)
-    Db.InitPool(pwd, dbPort)
+    Db.Init(pwd, dbPort)
 
     testRunnerRedisMulti(t, Db)
 }
