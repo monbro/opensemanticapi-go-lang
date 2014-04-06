@@ -6,7 +6,7 @@ package adapter
 
 import (
     "net/url"
-    "encoding/json"
+    // "encoding/json"
     "sync"
     "strconv"
     "github.com/golang/glog"
@@ -126,7 +126,7 @@ func SearchWikipedia(searchTerm string) []string {
     rb := new(scraper.RequestBit)
 
     rb.Url = "https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+url.QueryEscape(searchTerm)+"&format=json"
-    glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
+    glog.Infof("Url crawling: %+v", rb.Url)
 
     // inject the struct for the json response
     rb.ResponseObjectInterface = new(requestStruct.WikiSearch)
@@ -148,11 +148,11 @@ func SearchWikipedia(searchTerm string) []string {
 /**
  * will get the content of a wikipedia page
  */
-func GetWikipediaPage(firstPage string) string {
+func GetWikipediaPage(pageTitle string) string {
     // lets create a new http request object
     rb := new(scraper.RequestBit)
-    rb.Url = "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles="+url.QueryEscape(firstPage)
-    glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
+    rb.Url = "http://en.wikipedia.org/w/api.php?rvprop=content&format=json&prop=revisions|categories&rvprop=content&action=query&titles="+url.QueryEscape(pageTitle)
+    glog.Infof("Url crawling: %+v", rb.Url)
 
     // inject the struct for the json response
     rb.ResponseObjectInterface = new(requestStruct.WikiPage)
@@ -238,26 +238,26 @@ func (w *ConcurrencyA) CreateSnippetWordsRelation(snippet string) {
  *
  * NOT IN USE CURRENTLY
  */
-func OpenSearchWikipedia(searchTerm string) []string {
-    // lets create a new http request object
-    rb := new(scraper.RequestBit)
+// func OpenSearchWikipedia(searchTerm string) []string {
+//     // lets create a new http request object
+//     rb := new(scraper.RequestBit)
 
-    rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search="+url.QueryEscape(searchTerm)+"&format=json&limit=3"
-    glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
-    rb.Work() // fire the request
+//     rb.Url = "http://en.wikipedia.org/w/api.php?action=opensearch&search="+url.QueryEscape(searchTerm)+"&format=json&limit=3"
+//     glog.Infof("Url crawling in SearchWikipedia: %+v", rb.Url)
+//     rb.Work() // fire the request
 
-    // as wikipedia returns a sh*t formatted json we need to assign the result in two steps
-    wikiOpenSearch := new(requestStruct.WikiOpenSearch)
+//     // as wikipedia returns a sh*t formatted json we need to assign the result in two steps
+//     wikiOpenSearch := new(requestStruct.WikiOpenSearch)
 
-    // first step is to assign the result term which is the first item in the returned array
-    if err := json.Unmarshal(rb.ResponseArrayRawJson[0], &wikiOpenSearch.SearchTerm); err != nil {
-        glog.Fatalf("expect string: %+v", err)
-    }
+//     // first step is to assign the result term which is the first item in the returned array
+//     if err := json.Unmarshal(rb.ResponseArrayRawJson[0], &wikiOpenSearch.SearchTerm); err != nil {
+//         glog.Fatalf("expect string: %+v", err)
+//     }
 
-    // second step is to assign the second item into the 'Results' array
-    if err := json.Unmarshal(rb.ResponseArrayRawJson[1], &wikiOpenSearch.Results); err != nil {
-        glog.Fatalf("expect []string: %+v", err)
-    }
+//     // second step is to assign the second item into the 'Results' array
+//     if err := json.Unmarshal(rb.ResponseArrayRawJson[1], &wikiOpenSearch.Results); err != nil {
+//         glog.Fatalf("expect []string: %+v", err)
+//     }
 
-    return wikiOpenSearch.Results
-}
+//     return wikiOpenSearch.Results
+// }

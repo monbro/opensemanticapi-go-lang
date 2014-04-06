@@ -3,6 +3,10 @@ package database
 import (
 )
 
+/**
+ * common interface to describe all database adapter
+ * @TODO tidy up the methods
+ */
 type DatabaseInterface interface {
     Init(string, int)
     Close()

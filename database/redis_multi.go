@@ -77,10 +77,16 @@ func (db *RedisMulti) RandomPageFromQueue() string {
     }
 
     // remove page as well
-    r.Send("SREM", QUEUED_PAGES, pageName)
+    _, e1 := r.Do("SREM", QUEUED_PAGES, pageName)
+    if e1 != nil {
+        glog.Errorf("failed to create the client", e)
+    }
 
     // add page to be done
-    r.Send("SADD", DONE_PAGES, pageName)
+    _, e2 :=r.Do("SADD", DONE_PAGES, pageName)
+    if e2 != nil {
+        glog.Errorf("failed to create the client", e)
+    }
 
     if pageName == "" {
         panic("No page in queue anymore!!!")

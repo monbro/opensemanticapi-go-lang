@@ -5,7 +5,7 @@
 package util
 
 import (
-    "log"
+    "github.com/golang/glog"
     "strings"
     "regexp"
     "bytes"
@@ -132,18 +132,18 @@ func MaximumUlimit() {
     var rLimit syscall.Rlimit
     err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
     if err != nil {
-        log.Println("Error Getting Rlimit ", err)
+        glog.Infof("Error Getting Rlimit ", err)
     }
-    log.Println(rLimit)
+    glog.Infof("Current Rlimit ",rLimit)
     rLimit.Max = 999999
     rLimit.Cur = 999999
     err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
     if err != nil {
-        log.Println("Error Setting Rlimit ", err)
+        glog.Infof("Error Setting Rlimit ", err)
     }
     err = syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
     if err != nil {
-        log.Println("Error Getting Rlimit ", err)
+        glog.Infof("Error Getting Rlimit ", err)
     }
-    log.Println("Rlimit Final", rLimit)
+    glog.Infof("Rlimit Final", rLimit)
 }
