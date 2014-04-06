@@ -4,7 +4,6 @@ import(
     "testing"
     // . "github.com/smartystreets/goconvey/convey"
     "github.com/monbro/opensemanticapi-go-lang/database"
-    // "github.com/monbro/opensemanticapi-go-lang/worker"
     analyseAdapter "github.com/monbro/opensemanticapi-go-lang/worker/adapter"
     "log"
     "strconv"

@@ -30,18 +30,6 @@ func (db *RedisDo) Init(Password string, DbNum int) {
     }
 }
 
-func (db *RedisDo) Close() {
-    db.Client.Close()
-}
-
-func (db *RedisDo) Flushall() {
-    var err error
-    _, err = db.Client.Do("FLUSHALL")
-    if err != nil {
-        log.Println("failed to create the client", err)
-    }
-}
-
 func (db *RedisDo) AddPageToQueue(pageName string) {
     // only add page if it is not done
     wasProcessed, e := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
@@ -111,7 +99,7 @@ func (db *RedisDo) AddWordRelation(word string, relation string) {
 }
 
 /**
- * api RedisDo functions
+ * api RedisDo methods
  */
 
 func (db *RedisDo) GetPopularWordRelations(word string) []string {
@@ -127,7 +115,35 @@ func (db *RedisDo) GetAnalysedTextBlocksCounter() string {
 }
 
 /**
- * private helper functions
+ * public helper methods
+ */
+
+func (db *RedisDo) Set(key string, value string) (interface{}, error) {
+    return db.Client.Do("SET", key, value)
+}
+
+func (db *RedisDo) Get(key string) (interface{}, error) {
+    return db.Client.Do("GET", key)
+}
+
+func (db *RedisDo) Members(key string) (interface{}, error) {
+    return db.Client.Do("SMEMBERS", key)
+}
+
+func (db *RedisDo) Close() {
+    db.Client.Close()
+}
+
+func (db *RedisDo) Flushall() {
+    var err error
+    _, err = db.Client.Do("FLUSHALL")
+    if err != nil {
+        log.Println("failed to create the client", err)
+    }
+}
+
+/**
+ * private helper methods
  */
 
 func (db *RedisDo) createWordRelation(word string, relation string) {
@@ -169,7 +185,7 @@ func (db *RedisDo) getValueFromKey(key string) string {
 }
 
 /**
- * functions for statistics
+ * methods for statistics
  */
 
 func (db *RedisDo) RaiseScrapedTextBlocksCounter() {

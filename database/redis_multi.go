@@ -34,31 +34,6 @@ func (db *RedisMulti) Init(Password string, DbNum int) {
     }
 }
 
-func (db *RedisMulti) Close() {
-    db.Pool.Close()
-}
-
-func (db *RedisMulti) Flushall() {
-    r := db.Pool.Get()
-    defer r.Close()
-
-    r.Do("FLUSHALL")
-}
-
-func (db *RedisMulti) Flush() {
-    r := db.Pool.Get()
-    defer r.Close()
-
-    r.Flush()
-}
-
-func (db *RedisMulti) Multi() {
-    r := db.Pool.Get()
-    defer r.Close()
-
-    r.Send("MULTI")
-}
-
 func (db *RedisMulti) AddPageToQueue(pageName string) {
     r := db.Pool.Get()
     defer r.Close()
@@ -139,7 +114,57 @@ func (db *RedisMulti) GetAnalysedTextBlocksCounter() string {
 }
 
 /**
- * private helper functions
+ * public helper methods
+ */
+
+func (db *RedisMulti) Set(key string, value string) (interface{}, error) {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    return r.Do("SET", key, value)
+}
+
+func (db *RedisMulti) Get(key string) (interface{}, error) {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    return r.Do("GET", key)
+}
+
+func (db *RedisMulti) Members(key string) (interface{}, error) {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    return r.Do("SMEMBERS", key)
+}
+
+func (db *RedisMulti) Close() {
+    db.Pool.Close()
+}
+
+func (db *RedisMulti) Flushall() {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Do("FLUSHALL")
+}
+
+func (db *RedisMulti) Flush() {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Flush()
+}
+
+func (db *RedisMulti) Multi() {
+    r := db.Pool.Get()
+    defer r.Close()
+
+    r.Send("MULTI")
+}
+
+/**
+ * private helper methods
  */
 
 func (db *RedisMulti) stripOverlappingListContent(contextList []string, stripList []string) {
@@ -187,7 +212,7 @@ func (db *RedisMulti) getValueFromKey(key string) string {
 }
 
 /**
- * functions for statistics
+ * methods for statistics
  */
 
 func (db *RedisMulti) RaiseScrapedTextBlocksCounter() {

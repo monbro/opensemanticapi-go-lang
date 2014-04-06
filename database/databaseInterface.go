@@ -6,6 +6,9 @@ import (
 type DatabaseInterface interface {
     Init(string, int)
     Close()
+    Set(string, string) (interface{}, error)
+    Get(string) (interface{}, error)
+    Members(string) (interface{}, error)
     Flushall()
     AddPageToQueue(string)
     AddPageToDone(string)
