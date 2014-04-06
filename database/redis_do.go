@@ -103,11 +103,21 @@ func (db *RedisDo) AddWordRelation(word string, relation string) {
  */
 
 func (db *RedisDo) GetPopularWordRelations(word string) []string {
-    return db.getPopularRelationsByDensity(word);
+    mongoDBWords := db.getPopularRelationsByDensity(word, 120)
+    popularWords := db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 500);
+
+    v := make([]string, 0, len(mongoDBWords))
+
+    for  _, value := range mongoDBWords {
+        if !stringInSlice(value, popularWords) {
+            v = append(v, value)
+        }
+    }
+    return v
 }
 
 func (db *RedisDo) GetMostPopularWords() []string {
-    return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS);
+    return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 120);
 }
 
 func (db *RedisDo) GetAnalysedTextBlocksCounter() string {
@@ -162,10 +172,10 @@ func (db *RedisDo) createWordRelation(word string, relation string) {
     }
 }
 
-func (db *RedisDo) getPopularRelationsByDensity(word string) []string {
+func (db *RedisDo) getPopularRelationsByDensity(word string, limit int) []string {
     allRelations, err := redis.Strings(db.Client.Do("SORT", word,
         "BY", word+":*",
-        "Limit", 0, 120,
+        "Limit", 0, limit,
         "DESC",
         "GET", "#"))
     if err != nil {

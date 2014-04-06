@@ -102,15 +102,25 @@ func (db *RedisMulti) AddWordRelation(word string, relation string) {
  */
 
 func (db *RedisMulti) GetPopularWordRelations(word string) []string {
-    return db.getPopularRelationsByDensity(word);
+    mongoDBWords := db.getPopularRelationsByDensity(word, 120)
+    popularWords := db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 500);
+
+    v := make([]string, 0, len(mongoDBWords))
+
+    for  _, value := range mongoDBWords {
+        if !stringInSlice(value, popularWords) {
+            v = append(v, value)
+        }
+    }
+    return v
 }
 
 func (db *RedisMulti) GetMostPopularWords() []string {
-    return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS);
+    return db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 120)
 }
 
 func (db *RedisMulti) GetAnalysedTextBlocksCounter() string {
-    return db.getValueFromKey(TEXTBLOCKS_COUNTER);
+    return db.getValueFromKey(TEXTBLOCKS_COUNTER)
 }
 
 /**
@@ -167,11 +177,6 @@ func (db *RedisMulti) Multi() {
  * private helper methods
  */
 
-func (db *RedisMulti) stripOverlappingListContent(contextList []string, stripList []string) {
-    // check the words that are
-    // maybe try http://redis.io/commands/sdiff
-}
-
 func (db *RedisMulti) createWordRelation(word string, relation string) {
     r := db.Pool.Get()
     defer r.Close()
@@ -183,13 +188,13 @@ func (db *RedisMulti) createWordRelation(word string, relation string) {
     r.Send("INCR", word+":"+relation)
 }
 
-func (db *RedisMulti) getPopularRelationsByDensity(word string) []string {
+func (db *RedisMulti) getPopularRelationsByDensity(word string, limit int) []string {
     r := db.Pool.Get()
     defer r.Close()
 
     allRelations, err := redis.Strings(r.Do("SORT", word,
         "BY", word+":*",
-        "Limit", 0, 120,
+        "Limit", 0, limit,
         "DESC",
         "GET", "#"))
     if err != nil {
@@ -209,6 +214,15 @@ func (db *RedisMulti) getValueFromKey(key string) string {
     }
 
     return value
+}
+
+func stringInSlice(a string, list []string) bool {
+    for _, b := range list {
+        if b == a {
+            return true
+        }
+    }
+    return false
 }
 
 /**
