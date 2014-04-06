@@ -28,6 +28,7 @@ func main() {
         api.StartServer()
     } else {
 
+        // @TODO enable this on to be set via flag
         adapterName := "concurrencyA"
 
         worker := analyse.WorkerFactory(

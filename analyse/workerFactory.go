@@ -5,17 +5,8 @@
 package analyse
 
 import (
-    // "github.com/golang/glog"
     "github.com/monbro/opensemanticapi-go-lang/analyse/adapter"
 )
-
-// type Factory struct {
-//     Db *database.RedisMulti
-//     StartSearchTerm string
-//     SnippetLength int
-//     InfiniteWorking bool
-//     Adapter string
-// }
 
 func WorkerFactory(
                     adapterName string,
@@ -42,11 +33,6 @@ func WorkerFactory(
         isFastMode,
         isInfiniteCronjobRun,
         )
-
-    // worker.StartSearchTerm = StartSearchTerm
-    // worker.SnippetLength = SnippetLength
-    // worker.IsFastMode = isFastMode
-    // worker.IsInfiniteWorking = isInfiniteCronjobRun
 
     return worker
 }

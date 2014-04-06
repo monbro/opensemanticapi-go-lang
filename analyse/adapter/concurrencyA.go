@@ -36,7 +36,7 @@ func (w *ConcurrencyA) Configuration(
     w.StartSearchTerm = StartSearchTerm
     w.SnippetLength = SnippetLength
     w.IsFastMode = IsFastMode
-    w.IsInfiniteCronjobRun = IsInfiniteCronjobRun
+    w.IsInfiniteWorking = IsInfiniteCronjobRun
 }
 
 /**

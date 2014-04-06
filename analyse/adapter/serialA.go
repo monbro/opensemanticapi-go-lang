@@ -25,7 +25,7 @@ type SerialA struct {
 /**
  * configuration
  */
-func (w *ConcurrencyA) Configuration(
+func (w *SerialA) Configuration(
             StartSearchTerm string,
             SnippetLength int,
             IsFastMode bool,
@@ -33,7 +33,7 @@ func (w *ConcurrencyA) Configuration(
     w.StartSearchTerm = StartSearchTerm
     w.SnippetLength = SnippetLength
     w.IsFastMode = IsFastMode
-    w.IsInfiniteCronjobRun = IsInfiniteCronjobRun
+    w.IsInfiniteWorking = IsInfiniteCronjobRun
 }
 
 /**
