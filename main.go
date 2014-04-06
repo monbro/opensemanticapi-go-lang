@@ -11,8 +11,8 @@ import (
  * configurations constantes
  */
 const (
-    SNIPPET_LENGTH = 120
-    START_SEARCH_TERM = "london"
+    SnippetLength = 120
+    StartSearchTerm = "london"
 )
 
 func main() {
@@ -27,15 +27,18 @@ func main() {
         fmt.Println("Starting API server ...")
         api.StartServer()
     } else {
+
+        adapterName := "concurrencyA"
+
+        worker := analyse.WorkerFactory(
+                            adapterName,
+                            StartSearchTerm,
+                            SnippetLength,
+                            *isFastMode,
+                            *isInfiniteCronjobRun,
+                        )
+
         fmt.Println("Starting cronjob ...")
-
-        worker := new(analyse.Worker)
-        worker.START_SEARCH_TERM = START_SEARCH_TERM
-        worker.SNIPPET_LENGTH = SNIPPET_LENGTH
-
-        worker.isFastMode = *isFastMode
-        worker.isInfiniteWorking = *isInfiniteCronjobRun
-
         worker.Run()
     }
 }

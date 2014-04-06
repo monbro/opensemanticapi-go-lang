@@ -2,7 +2,7 @@
  * provides functions to create wording context relations
  */
 
-package analyse
+package util
 
 import (
     "log"

@@ -2,7 +2,7 @@
  * provides functions to create wording context relations
  */
 
-package analyse
+package adapter
 
 import (
     "net/url"
@@ -10,25 +10,39 @@ import (
     "sync"
     "strconv"
     "github.com/golang/glog"
+    "github.com/monbro/opensemanticapi-go-lang/analyse/util"
     "github.com/monbro/opensemanticapi-go-lang/scraper"
     "github.com/monbro/opensemanticapi-go-lang/requestStruct"
     "github.com/monbro/opensemanticapi-go-lang/database"
 )
 
-type Worker struct {
-    Debug bool
+type ConcurrencyA struct {
     Db *database.RedisMulti
-    START_SEARCH_TERM string
-    SNIPPET_LENGTH int
+    StartSearchTerm string
+    SnippetLength int
     IsInfiniteWorking bool
     IsFastMode bool
     Wg sync.WaitGroup
 }
 
 /**
+ * configuration
+ */
+func (w *ConcurrencyA) Configuration(
+            StartSearchTerm string,
+            SnippetLength int,
+            IsFastMode bool,
+            IsInfiniteCronjobRun bool) {
+    w.StartSearchTerm = StartSearchTerm
+    w.SnippetLength = SnippetLength
+    w.IsFastMode = IsFastMode
+    w.IsInfiniteCronjobRun = IsInfiniteCronjobRun
+}
+
+/**
  * will initially start the process
  */
-func (w *Worker) Run() {
+func (w *ConcurrencyA) Run() {
 
     // set flag if given
     if w.IsInfiniteWorking != true {
@@ -41,7 +55,7 @@ func (w *Worker) Run() {
     }
 
     if w.IsFastMode {
-        MaximumUlimit()
+        util.MaximumUlimit()
     }
 
     // init database
@@ -49,13 +63,13 @@ func (w *Worker) Run() {
     w.Db.InitPool("", 10)
 
     // initial start
-    w.RunNext(w.START_SEARCH_TERM)
+    w.RunNext(w.StartSearchTerm)
 }
 
 /**
  * will run the process of storing words that are related in its context
  */
-func (w *Worker) RunNext(searchTerm string) {
+func (w *ConcurrencyA) RunNext(searchTerm string) {
 
     glog.Infof("Searchterm Now: '%+v'", searchTerm)
 
@@ -77,14 +91,14 @@ func (w *Worker) RunNext(searchTerm string) {
 
     rawContent := GetWikipediaPage(pages[0])
 
-    snippetsRaw := GetSnippetsFromText(rawContent)
-    snippets := GetSnippetsFromText(rawContent)
-    snippets = CleanUpSnippets(snippets)
+    snippetsRaw := util.GetSnippetsFromText(rawContent)
+    snippets := util.GetSnippetsFromText(rawContent)
+    snippets = util.CleanUpSnippets(snippets)
 
     w.Db.Multi()
 
     for i := range snippets {
-        if w.SNIPPET_LENGTH < len(snippets[i]) {
+        if w.SnippetLength < len(snippets[i]) {
             // log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
             glog.Info("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippetsRaw[i])))
 
@@ -168,15 +182,15 @@ func GetWikipediaPage(firstPage string) string {
 /**
  * will analyse a snippet by spinning relations between each word within this snippet
  *
- * @TODO should be changed to fit https://gobyexample.com/worker-pools probably?
+ * @TODO should be changed to fit https://gobyexample.com/ConcurrencyA-pools probably?
  */
-func (w *Worker) CreateSnippetWordsRelation(snippet string) {
+func (w *ConcurrencyA) CreateSnippetWordsRelation(snippet string) {
 
     if !w.IsFastMode {
         w.Wg.Add(1)
     }
 
-    words := GetWordsFromSnippet(snippet)
+    words := util.GetWordsFromSnippet(snippet)
     for _, word := range words {
         // check if word has more than 2 letters and this includes checking for an empty string
         if len(word) > 2 {
@@ -199,9 +213,9 @@ func (w *Worker) CreateSnippetWordsRelation(snippet string) {
 /**
  * thats how the method would like with as a autarkic function
  */
-// func snippetWorker(snippets []string, Db *database.RedisMulti, SNIPPET_LENGTH int) {
+// func snippetConcurrencyA(snippets []string, Db *database.RedisMulti, SnippetLength int) {
 //     for i := range snippets {
-//         if SNIPPET_LENGTH < len(snippets[i]) {
+//         if SnippetLength < len(snippets[i]) {
 //             log.Println("Snippet "+strconv.Itoa(i)+"/"+strconv.Itoa(len(snippets))+" with a length of "+strconv.Itoa(len(snippets[i])))
 
 //             // analyse the text block
