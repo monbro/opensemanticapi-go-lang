@@ -30,7 +30,7 @@ func main() {
     } else {
 
         // @TODO enable this on to be set via flag
-        adapterName := "concurrencyA"
+        adapterName := "serialA"
 
         worker := analyse.WorkerFactory(
                             adapterName,
