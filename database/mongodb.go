@@ -9,6 +9,7 @@ package database
 import (
     "labix.org/v2/mgo"
     "labix.org/v2/mgo/bson"
+    "strconv"
     "log"
 )
 
@@ -73,6 +74,19 @@ func (db *MongoDb) Init(Password string, DbNum int) {
  * public helper methods
  */
 
+func (db *MongoDb) String(key interface{}, e error) (string, error) {
+    return key.(string), e
+}
+
+func (db *MongoDb) Int(key string, e error) (int, error) {
+    i, err := strconv.Atoi(key)
+    if err != nil {
+        // handle error
+        panic("Could not convert string to int")
+    }
+    return i, e
+}
+
 func (db *MongoDb) Set(key string, value string) (interface{}, error) {
     return db.Collection.Upsert(bson.M{"key": key}, bson.M{"key": key, "value": value})
 }
@@ -80,7 +94,7 @@ func (db *MongoDb) Set(key string, value string) (interface{}, error) {
 func (db *MongoDb) Get(key string) (interface{}, error) {
     var result bson.M
     err := db.Collection.Find(bson.M{"key": key}).One(&result)
-    return result, err
+    return result["value"], err
 }
 
 // func (db *MongoDb) Members(key string) (interface{}, error) {

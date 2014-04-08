@@ -128,6 +128,14 @@ func (db *RedisDo) GetAnalysedTextBlocksCounter() string {
  * public helper methods
  */
 
+func (db *RedisDo) String(key interface{}, e error) (string, error) {
+    return redis.String(key, e)
+}
+
+func (db *RedisDo) Int(key interface{}, e error) (int, error) {
+    return redis.Int(key, e)
+}
+
 func (db *RedisDo) Set(key string, value string) (interface{}, error) {
     return db.Client.Do("SET", key, value)
 }

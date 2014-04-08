@@ -86,7 +86,7 @@ func testRunner(t *testing.T, Db *database.MongoDb) {
 
                 Convey("should receive the key", func() {
                     // value, e := redis.String(Db.Get(key))
-                    value, e := Db.Get(key)
+                    value, e := Db.String(Db.Get(key))
                     So(e, ShouldEqual, nil)
                     So(keyValue, ShouldEqual, value)
                 })

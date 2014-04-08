@@ -133,6 +133,14 @@ func (db *RedisMulti) GetAnalysedTextBlocksCounter() string {
  * public helper methods
  */
 
+func (db *RedisMulti) String(key interface{}, e error) (string, error) {
+    return redis.String(key, e)
+}
+
+func (db *RedisMulti) Int(key interface{}, e error) (int, error) {
+    return redis.Int(key, e)
+}
+
 func (db *RedisMulti) Set(key string, value string) (interface{}, error) {
     r := db.Pool.Get()
     defer r.Close()
