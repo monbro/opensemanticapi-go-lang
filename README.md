@@ -9,7 +9,7 @@ This project exists in two different languages:
 
 [![Build Status](https://travis-ci.org/monbro/opensemanticapi-go-lang.png)](https://travis-ci.org/monbro/opensemanticapi-go-lang)
 
-**Works with go lang and Redis**
+**Works with [go lang](http://golang.org) and [Redis](http://redis.com) or [MongoDB](http://mongodb.com)**
 
 **Description**
 

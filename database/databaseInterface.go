@@ -23,4 +23,7 @@ type DatabaseInterface interface {
     GetMostPopularWords() []string
     GetAnalysedTextBlocksCounter() string
     RaiseScrapedTextBlocksCounter()
+    String(interface{}, error) string
+    Strings(interface{}, error) ([]string, error)
+    Int(interface{}, error) int
 }

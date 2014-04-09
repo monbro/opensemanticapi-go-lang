@@ -8,7 +8,7 @@ package database
 
 import (
     "github.com/garyburd/redigo/redis"
-    "log"
+    "github.com/golang/glog"
 )
 
 type RedisDo struct {
@@ -19,14 +19,14 @@ func (db *RedisDo) Init(Password string, DbNum int) {
     var err error
     db.Client, err = redis.Dial("tcp", ":6379")
     if err != nil {
-        log.Println("failed to create the client", err)
+        glog.Errorf("failed to create the client", err)
         return
     }
 
     var err2 error
     _, err2 = db.Client.Do("SELECT", DbNum)
     if err2 != nil {
-        log.Println("failed to create the client", err2)
+        glog.Errorf("failed to create the client", err2)
     }
 }
 
@@ -34,19 +34,19 @@ func (db *RedisDo) AddPageToQueue(pageName string) {
     // only add page if it is not done
     wasProcessed, e := redis.Bool(db.Client.Do("SISMEMBER", DONE_PAGES, pageName))
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
     }
 
     if !wasProcessed {
         _, e := db.Client.Do("SADD", QUEUED_PAGES, pageName)
 
         if e != nil {
-            log.Println("failed to create the client", e)
+            glog.Errorf("failed to create the client", e)
             return
         }
-        log.Printf("Added page to queue: '%+v'", pageName)
+        glog.Infof("Added page to queue: '%+v'", pageName)
     } else {
-        log.Println("Page is already member in queued pages: ", pageName)
+        glog.Errorf("Page is already member in queued pages: ", pageName)
     }
 }
 
@@ -54,10 +54,10 @@ func (db *RedisDo) AddPageToDone(pageName string) {
     _, e := db.Client.Do("SADD", DONE_PAGES, pageName)
 
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
         return
     }
-    log.Printf("Added page to done: '%+v'", pageName)
+    glog.Infof("Added page to done: '%+v'", pageName)
 }
 
 func (db *RedisDo) AddPagesToQueue(pagesToQueue []string) {
@@ -70,7 +70,7 @@ func (db *RedisDo) RandomPageFromQueue() string {
     pageName, e := redis.String(db.Client.Do("SRANDMEMBER", QUEUED_PAGES))
 
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
     }
 
     // remove page as well
@@ -80,7 +80,7 @@ func (db *RedisDo) RandomPageFromQueue() string {
     _, e = db.Client.Do("SADD", DONE_PAGES, pageName)
 
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
     }
 
     if pageName == "" {
@@ -156,7 +156,7 @@ func (db *RedisDo) Flushall() {
     var err error
     _, err = db.Client.Do("FLUSHALL")
     if err != nil {
-        log.Println("failed to create the client", err)
+        glog.Errorf("failed to create the client", err)
     }
 }
 
@@ -169,14 +169,14 @@ func (db *RedisDo) createWordRelation(word string, relation string) {
     _, e := db.Client.Do("SADD", word, relation)
 
     if e != nil {
-        log.Println("failed to add relations for this one", e)
+        glog.Errorf("failed to add relations for this one", e)
     }
 
     // increase counter for relation by one
     _, e = db.Client.Do("INCR", word+":"+relation)
 
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
     }
 }
 
@@ -211,6 +211,6 @@ func (db *RedisDo) RaiseScrapedTextBlocksCounter() {
     _, e := db.Client.Do("INCR", TEXTBLOCKS_COUNTER)
 
     if e != nil {
-        log.Println("failed to create the client", e)
+        glog.Errorf("failed to create the client", e)
     }
 }

@@ -15,7 +15,7 @@
 
 **Flags when running tests**
 
-Add the flag "-v" to print log messages to each command or see https://github.com/golang/glog/blob/master/glog.go.
+Add the flags "-v -alsologtostderr=true" to print log messages to each command or see https://github.com/golang/glog/blob/master/glog.go.
 
 **How to run benchmark test's manually**
 

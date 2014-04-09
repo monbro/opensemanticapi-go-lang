@@ -16,6 +16,7 @@ install:
   - go get github.com/golang/glog
   - go get labix.org/v2/mgo
 
-# http://docs.travis-ci.com/user/database-setup/#Redis
+# http://docs.travis-ci.com/user/database-setup/
 services:
   - redis-server
+  - mongodb
