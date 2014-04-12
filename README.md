@@ -17,16 +17,18 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 ![ScreenShot](https://raw.githubusercontent.com/monbro/opensemanticapi-go-lang/master/osapi_explanation.jpg)
 
+**Documentation**
+
 Please find more information in the [documentation](/doc/index.md).
 
-Random Example trough a REST API call
-==============================================
+**Random Example trough a REST API call**
 
 * String Input: "ship"
 
 * Json Output: ["midshipmen", "aboard", "ships", "rating", "master", "served", "seaman", "sea", "officers", "santa", "sailing", "cadets", "able", "sail", "navigation", "lieutenant", "hms", "expected", "yahoo", "storm", "rated", "promotion", "maría", "lewis", "false", "era", "boys", "wind", "voyage", "volunteer", "servants", "required", "passing", "palos"]
 
-Licence
-==============================================
+===========================
+
+**Licence**
 
 This software is published under the MIT-License. See 'license' for more information.
