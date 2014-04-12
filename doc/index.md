@@ -7,6 +7,8 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 ![ScreenShot](https://raw.githubusercontent.com/monbro/opensemanticapi-go-lang/master/osapi_explanation.jpg)
 
+===========================
+
 **Documentation**
 
 * [Concerns](/doc/concerns.md)
@@ -15,6 +17,8 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 * [Usage](/doc/usage.md)
 * [Testing](/doc/testing.md)
 * [References / Notes](/doc/references.md)
+
+===========================
 
 **Random Example trough a REST API call**
 
