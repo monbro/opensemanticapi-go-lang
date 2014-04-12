@@ -2,6 +2,10 @@
 
 **How to run the cronjob / scraper**
 
+* Ensure you have the redis database server running (or mongodb if you changed the database adapter)
+* redis: './src/redis-server'
+* mongodb: 'sudo ./mongod --dbpath=./db' // you will need to create the 'db' folder previously
+
 * ```go run src/github.com/monbro/opensemanticapi-go-lang/main.go``` to run the test script
 if you are in the terminal of the redis-cli you can check the result with ```select 10``` to be in the correct datbase
 and with ```SORT database by database:* Limit 0 120 DESC GET #``` you should get a example
