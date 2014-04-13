@@ -150,13 +150,17 @@ func (db *MongoDb) String(key interface{}, e error) (string, error) {
     return key.(string), e
 }
 
-func (db *MongoDb) Int(key string, e error) (int, error) {
+func (db *MongoDb) StringInt(key string, e error) (int, error) {
     i, err := strconv.Atoi(key)
     if err != nil {
         // handle error
         panic("Could not convert string to int")
     }
     return i, e
+}
+
+func (db *MongoDb) Int(key interface{}, e error) (int, error) {
+    return key.(int), e
 }
 
 func (db *MongoDb) Strings(reply interface{}, err error) ([]string, error) {
@@ -177,16 +181,23 @@ func (db *MongoDb) Set(key string, value string) (interface{}, error) {
 func (db *MongoDb) Get(key string) (interface{}, error) {
     var result bson.M
     err := db.CollectionRelations.Find(bson.M{"key": key}).One(&result)
-    glog.Infof("Test: '%+v'", result["t"])
+    // glog.Infof("Test: '%+v'", result["t"])
     return result["value"], err
 }
 
-// func (db *MongoDb) GetCount(key string, relation string) (interface{}, error) {
-//     var result bson.M
-//     err := db.CollectionRelations.Find(bson.M{"key": key}).One(&result)
-//     glog.Infof("Test: '%+v'", result["value"])
-//     return result["value"], err
-// }
+func (db *MongoDb) GetCount(key string, relation string) (interface{}, error) {
+    // var result bson.M
+    result := make(map[string]interface{})
+
+    // db.relations.find({"key": "bacon", "items.ham":{$exists:true}},{"items.ham":true}) // true could also the number 1
+    err := db.CollectionRelations.Find(bson.M{"key": key, "items."+relation: bson.M{"$exists": true} }).Select(bson.M{"items."+relation: true}).One(&result)
+
+    itemsMap := result["items"].(map[string]interface{})
+    returnValue := itemsMap[relation]
+
+    // glog.Infof("Test2: '%+v'", returnValue)
+    return returnValue, err
+}
 
 func (db *MongoDb) Members(key string) (interface{}, error) {
     var result bson.M
@@ -195,7 +206,7 @@ func (db *MongoDb) Members(key string) (interface{}, error) {
 }
 
 func (db *MongoDb) Close() {
-
+    //@TODO needs to be implemented
 }
 
 func (db *MongoDb) Flushall() {
@@ -221,7 +232,7 @@ func (db *MongoDb) createWordRelation(word string, relation string) {
         glog.Errorf("failed to create the client", err)
     }
 
-    glog.Infof("Added word relation: '%+v'", word)
+    // glog.Infof("Added word relation: '%+v'", word)
 }
 
 func (db *MongoDb) getPopularRelationsByDensity(word string, limit int) []string {

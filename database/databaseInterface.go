@@ -26,4 +26,5 @@ type DatabaseInterface interface {
     String(interface{}, error) string
     Strings(interface{}, error) ([]string, error)
     Int(interface{}, error) int
+    GetCount(string, string) interface{}
 }
