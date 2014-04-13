@@ -122,9 +122,19 @@ func (db *MongoDb) AddWordRelation(word string, relation string) {
 //  * api MongoDb methods
 //  */
 
-// func (db *MongoDb) GetPopularWordRelations(word string) []string {
+func (db *MongoDb) GetPopularWordRelations(word string) []string {
+    mongoDBWords := db.getPopularRelationsByDensity(word, 120)
+    popularWords := db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 500);
 
-// }
+    v := make([]string, 0, len(mongoDBWords))
+
+    for  _, value := range mongoDBWords {
+        if !stringInSlice(value, popularWords) {
+            v = append(v, value)
+        }
+    }
+    return v
+}
 
 // func (db *MongoDb) GetMostPopularWords() []string {
 // }
@@ -167,8 +177,16 @@ func (db *MongoDb) Set(key string, value string) (interface{}, error) {
 func (db *MongoDb) Get(key string) (interface{}, error) {
     var result bson.M
     err := db.CollectionRelations.Find(bson.M{"key": key}).One(&result)
+    glog.Infof("Test: '%+v'", result["t"])
     return result["value"], err
 }
+
+// func (db *MongoDb) GetCount(key string, relation string) (interface{}, error) {
+//     var result bson.M
+//     err := db.CollectionRelations.Find(bson.M{"key": key}).One(&result)
+//     glog.Infof("Test: '%+v'", result["value"])
+//     return result["value"], err
+// }
 
 func (db *MongoDb) Members(key string) (interface{}, error) {
     var result bson.M
@@ -192,17 +210,31 @@ func (db *MongoDb) Flushall() {
  */
 
 func (db *MongoDb) createWordRelation(word string, relation string) {
-    // val, e := db.CollectionRelations.Upsert(bson.M{"word": word}, bson.M{"word": word, "relations": value})
-    _, e := db.CollectionRelations.Upsert(bson.M{"word": word}, bson.M{"word": word, "t": bson.M{ "$inc": bson.M{ "words."+relation: 1 } }})
-
-    if e != nil {
-        glog.Errorf("failed to create the client", e)
+    var result bson.M
+    change := mgo.Change{
+        Update:    bson.D{{"$inc", bson.D{{"items."+relation, 1}}}},
+        Upsert:    true,
+        ReturnNew: true,
     }
+    var err error
+    if _, err = db.CollectionRelations.Find(bson.M{"key": word}).Apply(change, &result); err != nil {
+        glog.Errorf("failed to create the client", err)
+    }
+
+    glog.Infof("Added word relation: '%+v'", word)
 }
 
-// func (db *MongoDb) getPopularRelationsByDensity(word string, limit int) []string {
+func (db *MongoDb) getPopularRelationsByDensity(word string, limit int) []string {
 
-// }
+    var result bson.M
+    err := db.CollectionRelations.Find(bson.M{"key": word}).One(&result)
+    // e := db.CollectionRelations.Find(bson.M{"key": QUEUED_PAGES}, bson.M{"$pop": bson.M{ "t": 1 }}).One(&result)
+    if err != nil {
+        glog.Errorf("failed to create the client", err)
+    }
+
+    return result["items"].([]string)
+}
 
 // func (db *MongoDb) getValueFromKey(key string) string {
 

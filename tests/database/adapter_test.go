@@ -127,36 +127,36 @@ func testRunner(t *testing.T, Db *database.MongoDb) {
             })
         })
 
-        // Convey("should add a new relation to a word with a counter and receive it", func() {
+        Convey("should add a new relation to a word with a counter and receive it", func() {
 
-        //     word := "bacon"
-        //     relations := []string{"cheese" ,"ham" ,"gorgonzola" ,"salami" ,"ham" ,"ham", "cheese"}
+            word := "bacon"
+            relations := []string{"cheese" ,"ham" ,"gorgonzola" ,"salami" ,"ham" ,"ham", "cheese"}
 
-        //     Convey("should add all relation", func() {
-        //         // loop trough all relations
-        //         for _, relation := range relations {
-        //             Db.AddWordRelation(word, relation)
-        //         }
-        //     })
+            Convey("should add all relation", func() {
+                // loop trough all relations
+                for _, relation := range relations {
+                    Db.AddWordRelation(word, relation)
+                }
+            })
 
-        //     Convey("should have added a coutner for ham", func() {
-        //         hamCounter, _ := redis.Int(Db.Get("bacon:ham"))
-        //         So(hamCounter, ShouldEqual, 3)
-        //     })
+            // Convey("should have added a coutner for ham", func() {
+            //     hamCounter, _ := Db.String(Db.GetCount("bacon","ham"))
+            //     So(hamCounter, ShouldEqual, 3)
+            // })
 
-        //     Convey("should have added a coutner for salami", func() {
-        //         hamCounter, _ := redis.Int(Db.Get("bacon:salami"))
-        //         So(hamCounter, ShouldEqual, 1)
-        //     })
+            // Convey("should have added a coutner for salami", func() {
+            //     hamCounter, _ := Db.String(Db.Get("bacon:salami"))
+            //     So(hamCounter, ShouldEqual, 1)
+            // })
 
-        //     Convey("should receive all distinct existing relation", func() {
-        //         amountRelations := Db.GetPopularWordRelations(word)
-        //         So(len(amountRelations), ShouldEqual, 4) // because we added 5 distinct keys
-        //         So(amountRelations[0], ShouldEqual, "ham") // because it was added 3 times
-        //         So(amountRelations[1], ShouldEqual, "cheese") // because it was added 2 times
-        //     })
+            // Convey("should receive all distinct existing relation", func() {
+            //     amountRelations := Db.GetPopularWordRelations(word)
+            //     So(len(amountRelations), ShouldEqual, 4) // because we added 5 distinct keys
+            //     So(amountRelations[0], ShouldEqual, "ham") // because it was added 3 times
+            //     So(amountRelations[1], ShouldEqual, "cheese") // because it was added 2 times
+            // })
 
-        // })
+        })
 
     })
 }
