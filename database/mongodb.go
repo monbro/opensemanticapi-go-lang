@@ -251,7 +251,7 @@ func (db *MongoDb) createWordRelation(word string, relation string) {
         ReturnNew: true,
     }
     var err error
-    if _, err = db.CollectionRelations.Find(bson.M{"key": word}).Apply(change, &result); err != nil {
+    if _, err = db.CollectionRelations.Find(bson.M{"key": word, "items.name": bson.M{"$ne": relation}}).Apply(change, &result); err != nil {
         glog.Errorf("failed to create the client", err)
     }
 
