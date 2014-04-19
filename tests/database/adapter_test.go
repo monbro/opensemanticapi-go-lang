@@ -139,18 +139,19 @@ func testRunner(t *testing.T, Db *database.MongoDb) {
                 }
             })
 
-            Convey("should have added a coutner for ham", func() {
-                hamCounter, _ := Db.Int(Db.GetCount("bacon","ham"))
-                So(hamCounter, ShouldEqual, 3)
-            })
+            // Convey("should have added a coutner for ham", func() {
+            //     hamCounter, _ := Db.Int(Db.GetCount("bacon","ham"))
+            //     So(hamCounter, ShouldEqual, 3)
+            // })
 
-            Convey("should have added a coutner for salami", func() {
-                hamCounter, _ := Db.Int(Db.GetCount("bacon","salami"))
-                So(hamCounter, ShouldEqual, 1)
-            })
+            // Convey("should have added a coutner for salami", func() {
+            //     hamCounter, _ := Db.Int(Db.GetCount("bacon","salami"))
+            //     So(hamCounter, ShouldEqual, 1)
+            // })
 
             // Convey("should receive all distinct existing relation", func() {
             //     amountRelations := Db.GetPopularWordRelations(word)
+            //     log.Printf("Amount", amountRelations)
             //     So(len(amountRelations), ShouldEqual, 4) // because we added 5 distinct keys
             //     So(amountRelations[0], ShouldEqual, "ham") // because it was added 3 times
             //     So(amountRelations[1], ShouldEqual, "cheese") // because it was added 2 times

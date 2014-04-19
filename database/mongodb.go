@@ -124,16 +124,17 @@ func (db *MongoDb) AddWordRelation(word string, relation string) {
 
 func (db *MongoDb) GetPopularWordRelations(word string) []string {
     mongoDBWords := db.getPopularRelationsByDensity(word, 120)
-    popularWords := db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 500);
+    // popularWords := db.getPopularRelationsByDensity(MOST_POPULAR_WORDS, 500);
 
-    v := make([]string, 0, len(mongoDBWords))
+    // v := make([]string, 0, len(mongoDBWords))
 
-    for  _, value := range mongoDBWords {
-        if !stringInSlice(value, popularWords) {
-            v = append(v, value)
-        }
-    }
-    return v
+    // for  _, value := range mongoDBWords {
+    //     if !stringInSlice(value, popularWords) {
+    //         v = append(v, value)
+    //     }
+    // }
+
+    return mongoDBWords
 }
 
 // func (db *MongoDb) GetMostPopularWords() []string {
@@ -221,14 +222,112 @@ func (db *MongoDb) Flushall() {
  */
 
 func (db *MongoDb) createWordRelation(word string, relation string) {
+
+    // M{"$inc": M{"balance": 100}},
+
+    var result0 bson.M
+    change0 := mgo.Change{
+        // Update:    bson.M{"key": word},
+        Update:    bson.D{{"$setOnInsert", bson.D{{"key", word}} }},
+        Upsert:    true,
+        ReturnNew: true,
+    }
+    var err0 error
+    if _, err0 = db.CollectionRelations.Find(bson.M{"key": word}).Apply(change0, &result0); err0 != nil {
+        glog.Errorf("failed to create the client", err0)
+    }
+
     var result bson.M
     change := mgo.Change{
-        Update:    bson.D{{"$inc", bson.D{{"items."+relation, 1}}}},
+        // Update:    bson.D{{"$addToSet", bson.D{{"items", bson.M{"name": relation, "count": 1} }} }},
+        Update:    bson.M{
+                        "$addToSet": bson.D{{"items", bson.M{"name": relation, "count": 0} }},
+                        // "$inc": bson.M{"relations": 1 },
+                        },
+
+        // Update:    bson.D{{"$addToSet", bson.D{{"items", bson.D{{"name", relation}} }}}},
+        // Upsert:    true,
+        // Update:    bson.M{"$inc": bson.M{"items."+relation: 1 } },
+        ReturnNew: true,
+    }
+    var err error
+    if _, err = db.CollectionRelations.Find(bson.M{"key": word}).Apply(change, &result); err != nil {
+        glog.Errorf("failed to create the client", err)
+    }
+
+
+
+
+
+
+
+    var result2 bson.M
+    change2 := mgo.Change{
+        // Update:    bson.D{{"$inc", bson.D{{"items", bson.M{"name": relation,"count":1} }} }},
+        Update:    bson.M{"$inc": bson.M{"items.$.count": 1 } },
+        // Upsert:    true,
+        ReturnNew: true,
+    }
+    var err2 error
+    if _, err2 = db.CollectionRelations.Find(bson.M{"key": word, "items.name": relation}).Apply(change2, &result2); err2 != nil {
+        glog.Errorf("failed to create the client", err2)
+    }
+
+
+
+
+
+}
+
+// Update: bson.D{{"$inc", bson.D{{"balance", 100}}}},
+
+func (db *MongoDb) createWordRelation222(word string, relation string) {
+    var result bson.M
+
+    // M{"$inc": M{"balance": 100}},
+
+    change := mgo.Change{
+        // Update:    bson.D{{"$inc", bson.D{{"items", bson.M{"name": relation,"count":1} }} }},
+        Update:    bson.M{"$inc": bson.M{"items.$.count": 1 } },
+        // Upsert:    true,
+        ReturnNew: true,
+    }
+    var err error
+    if _, err = db.CollectionRelations.Find(bson.M{"key": word, "items.$.name": relation}).Apply(change, &result); err != nil {
+        glog.Errorf("failed to create the client", err)
+    }
+}
+
+func (db *MongoDb) createWordRelationOldWorksArray(word string, relation string) {
+    var result bson.M
+
+    change := mgo.Change{
+        Update:    bson.D{{"$push", bson.D{{"items", bson.M{"name": relation,"count":1} }} }},
         Upsert:    true,
         ReturnNew: true,
     }
     var err error
     if _, err = db.CollectionRelations.Find(bson.M{"key": word}).Apply(change, &result); err != nil {
+        glog.Errorf("failed to create the client", err)
+    }
+}
+
+func (db *MongoDb) createWordRelationOld(word string, relation string) {
+    var result bson.M
+
+    // .Apply(mgo.Change{Update: M{"$inc": M{"n": 1}}}, result)
+
+    change := mgo.Change{
+        // Update:    bson.D{{"items.$": relation}, {"$inc", bson.D{{"items.$."+relation, 1}}}}, // bson.D{{"$inc", bson.D{{"items."+relation, 1}}}},
+
+        // Update:    bson.M{"$inc": bson.M{"n": 1}},
+
+        Update:    bson.M{"$inc": bson.M{"items."+relation: 1}},
+        // Upsert:    true,
+        ReturnNew: true,
+    }
+    var err error
+    if _, err = db.CollectionRelations.Find(bson.M{"key": word, "items."+relation: 1}).Apply(change, &result); err != nil {
         glog.Errorf("failed to create the client", err)
     }
 
@@ -237,14 +336,20 @@ func (db *MongoDb) createWordRelation(word string, relation string) {
 
 func (db *MongoDb) getPopularRelationsByDensity(word string, limit int) []string {
 
-    var result bson.M
-    err := db.CollectionRelations.Find(bson.M{"key": word}).One(&result)
+    result := make(map[string]interface{})
+    err := db.CollectionRelations.Find(bson.M{"key": word}).Sort("items.*").One(&result)
     // e := db.CollectionRelations.Find(bson.M{"key": QUEUED_PAGES}, bson.M{"$pop": bson.M{ "t": 1 }}).One(&result)
     if err != nil {
         glog.Errorf("failed to create the client", err)
     }
 
-    return result["items"].([]string)
+    array := result["items"].(map[string]interface{})
+    v := make([]string, 0, len(array))
+
+    for index, _ := range array {
+        v = append(v, index)
+    }
+    return v
 }
 
 // func (db *MongoDb) getValueFromKey(key string) string {
