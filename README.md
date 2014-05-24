@@ -17,6 +17,6 @@ Will allow you to create your own semantic wording database with redis. Otherwis
 
 ![ScreenShot](https://raw.githubusercontent.com/monbro/opensemanticapi-go-lang/master/osapi_explanation.jpg)
 
-Please find more information in the [documentation](/doc/index.md).
+Please find more information in the [documentation](/doc/index.md). To support this project, please consider to [donate](https://www.gittip.com/monbro/).
 
 This software is published under the MIT-License. See 'license' for more information.
